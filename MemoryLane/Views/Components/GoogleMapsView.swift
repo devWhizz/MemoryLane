@@ -1,8 +1,8 @@
 //
 //  GoogleMapsView.swift
-//  MemoryVerse
+//  MemoryLane
 //
-//  Created by syntax on 23.01.24.
+//  Created by martin on 31.01.24.
 //
 
 
@@ -12,34 +12,42 @@ import CoreLocation
 
 struct GoogleMapView: UIViewRepresentable {
     
-    // The address for the marker
-    let address: String
+    // Address for the marker
+    var address: String
     
-    // Creates and returns a `GMSMapView` instance
+    // Create and return a `GMSMapView` instance
     func makeUIView(context: Context) -> GMSMapView {
         let mapView = GMSMapView()
         mapView.delegate = context.coordinator
         
         // Perform geocoding for the given address
-        let geocoder = CLGeocoder()
-        geocoder.geocodeAddressString(address) { placemarks, error in
-            if let location = placemarks?.first?.location {
-                // Convert address to coordinates and add a marker to the map
-                let marker = GMSMarker()
-                marker.position = location.coordinate
-                marker.map = mapView
-                // Focus the map on the marker's position
-                let cameraUpdate = GMSCameraUpdate.setCamera(GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: 8.0))
-                mapView.moveCamera(cameraUpdate)
-
-            }
-        }
+        updateMapView(mapView)
         
         return mapView
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        // Aktualisiere die Ansicht bei Bedarf
+        // Update the map view when the address changes
+        updateMapView(uiView)
+    }
+    
+    func updateMapView(_ mapView: GMSMapView) {
+        let geocoder = CLGeocoder()
+        geocoder.geocodeAddressString(address) { placemarks, error in
+            if let location = placemarks?.first?.location {
+                // Clear existing markers
+                mapView.clear()
+                
+                // Convert address to coordinates and add a marker to the map
+                let marker = GMSMarker()
+                marker.position = location.coordinate
+                marker.map = mapView
+                
+                // Focus the map on the marker's position
+                let cameraUpdate = GMSCameraUpdate.setCamera(GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: 12.0))
+                mapView.moveCamera(cameraUpdate)
+            }
+        }
     }
     
     func makeCoordinator() -> Coordinator {
@@ -52,11 +60,5 @@ struct GoogleMapView: UIViewRepresentable {
         init(_ parent: GoogleMapView) {
             self.parent = parent
         }
-    }
-}
-
-struct GoogleMapView_Previews: PreviewProvider {
-    static var previews: some View {
-        GoogleMapView(address: "Berlin, Germany")
     }
 }

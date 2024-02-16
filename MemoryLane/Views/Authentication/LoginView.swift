@@ -1,23 +1,35 @@
 //
 //  AuthenticationView.swift
-//  MemoryVerse
+//  MemoryLane
 //
-//  Created by syntax on 22.01.24.
+//  Created by martin on 29.01.24.
 //
 
 import SwiftUI
 
+
 struct LoginView: View {
     
     @EnvironmentObject private var userViewModel: UserViewModel
-    @StateObject private var memoryViewModel = MemoryViewModel()
+    @EnvironmentObject var memoryViewModel: MemoryViewModel
+    
+    // Set color scheme
+    @Environment(\.colorScheme) var colorScheme
+    
+    // Track user input
     @State private var email = ""
     @State private var password = ""
+    
+    // Control the display of the register sheet
     @State private var isRegisterSheetPresented = false
     
+    // Control the display of the alert
+    @State private var showAlert = false
+    
+    
     // Disable login button if email or password is empty
-    private var disableAuthentication: Bool {
-        email.isEmpty || password.isEmpty
+    private var disablLogin: Bool {
+        email.isEmpty || !isValidInput()
     }
     
     var body: some View {
@@ -25,31 +37,44 @@ struct LoginView: View {
         VStack(spacing: 16){
             Spacer()
             VStack {
-                // Email
-                TextField("Email address", text: $email)
+                Text("memoryLane")
+                    .font(.title2)
+                Text("slogan")
+                    .font(.callout)
+                    .multilineTextAlignment(.center)
+                    .padding(.vertical, 4)
+                Image(systemName: "book.pages.fill")
+                    .foregroundColor(colorScheme == .dark ? .orange : .blue)
+                    .font(.largeTitle)
+                    .padding(.bottom, 16)
+                
+                // User input (Email, Password)
+                TextField("emailAddress", text: $email)
                     .autocapitalization(.none)
                     .keyboardType(.emailAddress)
                     .padding(10)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.gray, lineWidth: 1)
+                            .stroke(colorScheme == .dark ? .white : .gray, lineWidth: 1)
                     )
-                
-                // Password
-                SecureField("Password", text: $password)
+                    .background(colorScheme == .dark ? .black.opacity(0.5) : .white.opacity(0.8))
+                SecureField("password", text: $password)
                     .autocapitalization(.none)
                     .padding(10)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.gray, lineWidth: 1)
+                            .stroke(colorScheme == .dark ? .white : .gray, lineWidth: 1)
                     )
-                // Login button
-                Button("Login", action: login)
-                    .disabled(disableAuthentication)
+                    .background(colorScheme == .dark ? .black.opacity(0.5) : .white.opacity(0.8))
+                
+                
+                // Trigger user login
+                Button("login", action: login)
+                    .disabled(disablLogin)
                     .frame(maxWidth: .infinity)
                     .padding(10)
-                    .background(Color.gray)
-                    .foregroundColor(.white)
+                    .background(disablLogin ? Color.gray : (colorScheme == .dark ? Color.orange : Color.blue))
+                    .foregroundColor(disablLogin ? Color.white : (colorScheme == .dark ? Color.black : Color.white))
                     .cornerRadius(10)
                     .padding(.top, 12)
                     .padding(.bottom, 24)
@@ -59,21 +84,25 @@ struct LoginView: View {
                 Button(action: {
                     isRegisterSheetPresented.toggle()
                 }) {
-                    Text("No account yet? Register now.")
-                        .foregroundColor(.blue)
+                    Text("noAccount")
+                        .foregroundColor(colorScheme == .dark ? .orange : .blue)
                         .font(.footnote)
                 }
                 .sheet(isPresented: $isRegisterSheetPresented) {
-                    RegisterView()
+                    // Present the RegisterView as a sheet (half the screen height)
+                    RegisterView(isPresented: $isRegisterSheetPresented)
+                        .presentationDetents([.medium])
+                        .presentationDragIndicator(.hidden)
                 }
+                
             }
             .padding(32)
-            .background(Color .white)
+            .background(colorScheme == .dark ? .black.opacity(0.7) : .white.opacity(0.8))
             .clipShape(RoundedRectangle(cornerRadius: 12))
             Spacer()
         }
         .background(
-            Image("tagebuch")
+            Image("diary-background")
                 .resizable()
                 .scaledToFill()
                 .edgesIgnoringSafeArea(.all)
@@ -82,9 +111,15 @@ struct LoginView: View {
         
     }
     
-    
+    // Perform user login
     private func login() {
         userViewModel.login(email: email, password: password)
+    }
+    
+    // Check the validity of user input
+    private func isValidInput() -> Bool {
+        let minCharacterCount = 6
+        return password.count >= minCharacterCount
     }
 }
 

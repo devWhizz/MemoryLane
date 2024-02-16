@@ -10,21 +10,29 @@ import UIKit
 import SwiftUI
 import PhotosUI
 
-// ImagePicker using PHPicker
+// CoverImagePicker using PHPicker
 struct CoverImagePicker: UIViewControllerRepresentable {
     
     @Binding var selectedImage: UIImage?
     @Binding var isPickerShowing: Bool
     
+    // Set color scheme
+    @Environment(\.colorScheme) var colorScheme
+    
     func makeUIViewController(context: Context) -> some UIViewController {
         // Configure PHPicker
         var configuration = PHPickerConfiguration()
         configuration.filter = .images
-        configuration.selectionLimit = 5
+        // Allow only one image to be selected
+        configuration.selectionLimit = 1
         
         // Create PHPickerViewController
         let picker = PHPickerViewController(configuration: configuration)
         picker.delegate = context.coordinator
+        
+        // Set the accent color based on the color scheme
+        picker.view.tintColor = colorScheme == .dark ? .orange : .systemBlue
+        
         return picker
     }
     
@@ -38,9 +46,9 @@ struct CoverImagePicker: UIViewControllerRepresentable {
     
     // Coordinator class to handle events from PHPickerViewController
     class Coordinator: NSObject, PHPickerViewControllerDelegate {
-        var parent: ImagePicker
+        var parent: CoverImagePicker
         
-        init(_ parent: ImagePicker) {
+        init(_ parent: CoverImagePicker) {
             self.parent = parent
         }
         
@@ -64,3 +72,4 @@ struct CoverImagePicker: UIViewControllerRepresentable {
         }
     }
 }
+

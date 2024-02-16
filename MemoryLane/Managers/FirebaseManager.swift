@@ -1,14 +1,15 @@
 //
 //  FirebaseManager.swift
-//  MemoryVerse
+//  MemoryLane
 //
-//  Created by syntax on 22.01.24.
+//  Created by martin on 26.01.24.
 //
 
 import Foundation
 import FirebaseAuth
 import FirebaseFirestore
 import FirebaseFirestoreSwift
+
 
 class FirebaseManager {
     
@@ -21,7 +22,7 @@ class FirebaseManager {
     let database = Firestore.firestore()
     
     var userId: String? {
-            auth.currentUser?.uid
-        }
+        auth.currentUser?.uid
+    }
     
 }

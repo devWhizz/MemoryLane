@@ -2,10 +2,11 @@
 //  User.swift
 //  MemoryLane
 //
-//  Created by martin on 22.01.24.
+//  Created by martin on 26.01.24.
 //
 
 import Foundation
+
 
 struct User: Codable {
     var id: String

@@ -11,7 +11,7 @@ import SwiftUI
 struct SearchView: View {
     
     @State private var searchText = ""
-    @StateObject private var memoryViewModel = MemoryViewModel()
+    @EnvironmentObject var memoryViewModel: MemoryViewModel
     
     // Control the presentation of the sheet
     @Binding var isPresented: Bool
@@ -28,8 +28,6 @@ struct SearchView: View {
                         .onChange(of: searchText) {
                             memoryViewModel.searchMemories(query: searchText)
                         }
-                        .padding(.vertical, 24)
-
                     if searchText.isEmpty {
                         Text("noSearchTerm")
                             .font(.headline)
@@ -46,6 +44,7 @@ struct SearchView: View {
                 }
             }
             .navigationTitle("Search")
+            .accentColor(colorScheme == .dark ? .orange : .blue)
             .toolbar {
                 // Close button in the navigation bar
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -53,6 +52,7 @@ struct SearchView: View {
                         isPresented = false
                     }) {
                         Image(systemName: "xmark.circle")
+                            .foregroundColor(colorScheme == .dark ? Color.orange : Color.blue)
                     }
                 }
             }
@@ -60,9 +60,9 @@ struct SearchView: View {
     }
 }
 
-
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
         SearchView(isPresented: .constant(true))
     }
 }
+

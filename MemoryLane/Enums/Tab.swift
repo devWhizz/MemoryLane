@@ -1,41 +1,42 @@
 //
 //  Tabs.swift
-//  MemoryVerse
+//  MemoryLane
 //
-//  Created by syntax on 23.01.24.
+//  Created by martin on 31.01.24.
 //
 
 import SwiftUI
 
+
 enum Tab: String, Identifiable, CaseIterable {
-    case home, search, favorites, settings
+    case home, timeline, favorites, profile
     
     var id: String { rawValue }
     
-    var title: String {
+    var title: LocalizedStringKey {
         switch self {
-        case .home: return "Home"
-        case .search: return "Search"
-        case .favorites: return "Favorites"
-        case .settings: return "Settings"
+        case .home: return LocalizedStringKey("home")
+        case .timeline: return LocalizedStringKey("timeline")
+        case .favorites: return LocalizedStringKey("favorites")
+        case .profile: return LocalizedStringKey("profile")
         }
     }
     
     var icon: String {
         switch self {
-        case .home: return "house.fill"
-        case .search: return "rectangle.and.text.magnifyingglass"
+        case .home: return "house"
+        case .timeline: return "calendar.day.timeline.left"
         case .favorites: return "heart"
-        case .settings: return "gearshape"
+        case .profile: return "person"
         }
     }
     
     var view: AnyView {
         switch self {
         case .home: return AnyView(HomeView())
-        case .search: return AnyView(HomeView())
-        case .favorites: return AnyView(HomeView())
-        case .settings: return AnyView(SettingsView())
+        case .timeline: return AnyView(TimelineView())
+        case .favorites: return AnyView(FavoritesView())
+        case .profile: return AnyView(ProfileView())
         }
     }
     

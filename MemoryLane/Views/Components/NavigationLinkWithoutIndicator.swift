@@ -2,17 +2,24 @@
 //  NavigationLinkWithoutIndicator.swift
 //  MemoryLane
 //
-//  Created by syntax on 14.02.24.
+//  Created by martin on 14.02.24.
 //
 
 import SwiftUI
 
-struct NavigationLinkWithoutIndicator: View {
+struct NavigationLinkWithoutIndicator<Destination: View, Label: View>: View {
+    
+    let destination: Destination
+    let label: () -> Label
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack(alignment: .leading) {
+            NavigationLink(
+                destination: destination) {}
+            // Make the NavigationLink transparent
+                .opacity(0)
+            // Put the empty label on top of it
+            label()
+        }
     }
-}
-
-#Preview {
-    NavigationLinkWithoutIndicator()
 }

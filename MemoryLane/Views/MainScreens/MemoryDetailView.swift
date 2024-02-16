@@ -14,8 +14,14 @@ struct MemoryDetailView: View {
     // Observe changes in the MemoryViewModel
     @ObservedObject var memoryViewModel: MemoryViewModel
     
-    // Control the visibility of the "AddMemory" sheet
+    // Control the visibility of the sheet
     @State private var isEditMemoryViewPresented = false
+    
+    @State private var showingDeleteAlert = false
+    
+    // Set color scheme
+    @Environment(\.colorScheme) var colorScheme
+    
     
     // Memory object to display details
     var memory: Memory
@@ -57,7 +63,7 @@ struct MemoryDetailView: View {
                         Spacer()
                         
                         Image(systemName: memory.isFavorite ? "heart.fill" : "heart")
-                            .foregroundColor(memory.isFavorite ? .blue : .gray)
+                            .foregroundColor(memory.isFavorite ? .accentColor : .gray)
                             .padding(.horizontal)
                             .onTapGesture {
                                 // Toggle the isFavorite status
@@ -80,7 +86,7 @@ struct MemoryDetailView: View {
                                             image
                                                 .resizable()
                                                 .scaledToFill()
-                                                .frame(width: 150, height: 100)
+                                                .frame(width: 250, height: 150)
                                                 .cornerRadius(8)
                                         }
                                         .padding(.vertical, 16)
@@ -96,8 +102,10 @@ struct MemoryDetailView: View {
                             .frame(height: 300)
                         Text("\(memory.location)")
                             .font(.headline)
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                            .multilineTextAlignment(.center)
                             .padding(10)
-                            .background(Color.white)
+                            .background(colorScheme == .dark ? .black : .white)
                             .cornerRadius(8)
                             .shadow(radius: 5)
                             .padding(.horizontal, 20)
@@ -112,6 +120,22 @@ struct MemoryDetailView: View {
                 // Trigger the EditMemory sheet
                 Button(action: editMemory) {
                     Image(systemName: "slider.horizontal.2.gobackward")
+                }
+                // Delete memory
+                Button(action: {
+                    showingDeleteAlert = true
+                }) {
+                    Image(systemName: "trash")
+                }
+                .alert(isPresented: $showingDeleteAlert) {
+                    Alert(
+                        title: Text("deleteTitle"),
+                        message: Text("deletemessage"),
+                        primaryButton: .destructive(Text("confirm")) {
+                            memoryViewModel.deleteMemory(memory: memory)
+                        },
+                        secondaryButton: .cancel()
+                    )
                 }
             }
             .sheet(isPresented: $isEditMemoryViewPresented) {
@@ -129,7 +153,6 @@ struct MemoryDetailView: View {
 
 struct MemoryDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        
         let memoryViewModel = MemoryViewModel()
         MemoryDetailView(memoryViewModel: memoryViewModel, memory: Memory.exampleMemory)
     }

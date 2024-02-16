@@ -2,7 +2,13 @@
 //  Errors.swift
 //  MemoryLane
 //
-//  Created by syntax on 31.01.24.
+//  Created by martin on 01.02.24.
 //
 
 import Foundation
+
+
+enum ImageUploadError: Error {
+    case missingImage
+    case imageCompressionError
+}

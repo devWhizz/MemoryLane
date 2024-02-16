@@ -9,6 +9,9 @@ import SwiftUI
 
 struct SingleMemoryItemView: View {
     
+    // Set color scheme
+    @Environment(\.colorScheme) var colorScheme
+    
     let memory: Memory
     
     var body: some View {
@@ -22,7 +25,7 @@ struct SingleMemoryItemView: View {
                         .scaledToFit()
                         .frame(width: 50, height: 50)
                         .clipped()
-                        .foregroundColor(.blue)
+                        .foregroundColor(.accentColor)
                 case .success(let image):
                     // Loaded image
                     image
@@ -44,39 +47,38 @@ struct SingleMemoryItemView: View {
                         .scaledToFit()
                         .frame(width: 50, height: 50)
                         .clipped()
-                        .foregroundColor(.blue)
+                        .foregroundColor(.accentColor)
                 @unknown default:
                     // Handle future cases
                     EmptyView()
                 }
             }
-            VStack (alignment: .leading) {
-                Text(memory.title)
-                    .font(.headline)
-                    .foregroundColor(.black)
-                Text(formattedDate(from: memory.date))
+            VStack (alignment: .leading, spacing: 8) {
+                Text(memory.date, style: .date)
                     .font(.subheadline)
                     .foregroundColor(.gray)
+                Text(memory.title)
+                    .font(.headline)
+                    .bold()
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
+                Text(memory.location)
+                    .font(.subheadline)
+                    .foregroundColor(colorScheme == .dark ? Color.orange : Color.blue)
+                    .lineLimit(1)
             }
             Spacer()
         }
         .overlay(
             RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.blue, lineWidth: 1) // Rahmenfarbe und -breite anpassen
+                .stroke(colorScheme == .dark ? .white : .black, lineWidth: 0.5)
         )
         .padding(.horizontal, 16)
         
-    }
-    // Format the date
-    private func formattedDate(from date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        return formatter.string(from: date)
     }
 }
 
 struct FavoritesItemView_Previews: PreviewProvider {
     static var previews: some View {
-        SingleMemoryItemView(memory: exampleMemory)
+        SingleMemoryItemView(memory: Memory.exampleMemory)
     }
 }

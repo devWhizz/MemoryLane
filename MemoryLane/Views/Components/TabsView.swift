@@ -2,12 +2,21 @@
 //  NavigationView.swift
 //  MemoryLane
 //
-//  Created by martin on 23.01.24.
+//  Created by martin on 28.01.24.
 //
 
 import SwiftUI
 
+
 struct TabsView: View {
+    
+    // Set color scheme
+    @Environment(\.colorScheme) var colorScheme
+    
+    init() {
+        // Set color for unselected icons in the TabView
+        UITabBar.appearance().unselectedItemTintColor = UIColor.lightGray
+    }
     
     var body: some View {
         TabView {
@@ -20,12 +29,7 @@ struct TabsView: View {
                     .tag(tab)
             }
         }
-    }
-    
-}
-
-struct TabsView_Previews: PreviewProvider {
-    static var previews: some View {
-        TabsView()
+        // Dynamically set accent color based on colorScheme
+        .accentColor(colorScheme == .dark ? Color.orange : Color.blue)
     }
 }
