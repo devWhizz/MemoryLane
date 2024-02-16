@@ -2,16 +2,42 @@
 //  MemoryLaneApp.swift
 //  MemoryLane
 //
-//  Created by syntax on 24.01.24.
+//  Created by martin on 22.01.24.
 //
 
 import SwiftUI
+import Firebase
+import GoogleMaps
+
 
 @main
 struct MemoryLaneApp: App {
+    
+    @StateObject private var userViewModel = UserViewModel()
+    
+    
+    init(){
+        FirebaseConfiguration.shared.setLoggerLevel(.min)
+        FirebaseApp.configure()
+        
+        GMSServices.provideAPIKey("AIzaSyBodVllpWkN93TW6NefjyNAPIKhqfTPOP0")
+
+    }
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            // Check if the user is logged in
+            if userViewModel.userIsLoggedIn {
+                // Display the HomeView if the user is logged in
+                TabsView()
+                    .environmentObject(userViewModel)
+            } else {
+                // Display the LoginView if the user is not logged in
+                LoginView()
+                    .environmentObject(userViewModel)
+            }
         }
     }
 }
+
+
