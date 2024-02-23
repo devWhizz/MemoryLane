@@ -13,7 +13,7 @@ struct SearchView: View {
     @State private var searchText = ""
     @EnvironmentObject var memoryViewModel: MemoryViewModel
     
-    // Control the presentation of the sheet
+    // Control the presentation of the sheet itself
     @Binding var isPresented: Bool
     
     // Set color scheme

@@ -2,7 +2,7 @@
 //  ImagePicker.swift
 //  MemoryLane
 //
-//  Created by martin on 05.02.24.
+//  Created by martin on 01.02.24.
 //
 
 import Foundation
@@ -10,10 +10,10 @@ import UIKit
 import SwiftUI
 import PhotosUI
 
-// GalleryImagePicker using PHPicker
-struct GalleryImagePicker: UIViewControllerRepresentable {
+// SingleImagePicker using PHPicker
+struct SingleImagePicker: UIViewControllerRepresentable {
     
-    @Binding var selectedImages: [UIImage]
+    @Binding var selectedImage: UIImage?
     @Binding var isPickerShowing: Bool
     
     // Set color scheme
@@ -23,8 +23,8 @@ struct GalleryImagePicker: UIViewControllerRepresentable {
         // Configure PHPicker
         var configuration = PHPickerConfiguration()
         configuration.filter = .images
-        // Allow up to 5 images to be selected
-        configuration.selectionLimit = 10
+        // Allow only one image to be selected
+        configuration.selectionLimit = 1
         
         // Create PHPickerViewController
         let picker = PHPickerViewController(configuration: configuration)
@@ -46,27 +46,22 @@ struct GalleryImagePicker: UIViewControllerRepresentable {
     
     // Coordinator class to handle events from PHPickerViewController
     class Coordinator: NSObject, PHPickerViewControllerDelegate {
-        var parent: GalleryImagePicker
+        var parent: SingleImagePicker
         
-        init(_ parent: GalleryImagePicker) {
+        init(_ parent: SingleImagePicker) {
             self.parent = parent
         }
         
+        // Called when the user picks an image
         func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-            for result in results {
-                let itemProvider = result.itemProvider
-                
-                guard itemProvider.canLoadObject(ofClass: UIImage.self) else {
-                    // Handle the absence of itemProvider, perhaps log an error
-                    continue
-                }
-                
+            if let itemProvider = results.first?.itemProvider,
+               itemProvider.canLoadObject(ofClass: UIImage.self) {
                 // Load the selected image
-                itemProvider.loadObject(ofClass: UIImage.self) { loadedImage, error in
-                    if let image = loadedImage as? UIImage {
-                        // Update the selected images in the parent asynchronously on the main thread
+                itemProvider.loadObject(ofClass: UIImage.self) { (image, error) in
+                    if let image = image as? UIImage {
+                        // Update the selected image in the parent asynchronously on the main thread
                         DispatchQueue.main.async {
-                            self.parent.selectedImages.append(image)
+                            self.parent.selectedImage = image
                         }
                     }
                 }
@@ -77,3 +72,4 @@ struct GalleryImagePicker: UIViewControllerRepresentable {
         }
     }
 }
+

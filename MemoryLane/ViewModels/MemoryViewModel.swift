@@ -186,8 +186,7 @@ class MemoryViewModel : ObservableObject {
     }
     
     // Update an existing memory in Firestore
-    func editMemory(memory: Memory, newCategory: String, newTitle: String, newDescription: String, newDate: Date, newLocation: String, newCoverImage: String
-                    //newGalleryImages: [String]?
+    func editMemory(memory: Memory, newCategory: String, newTitle: String, newDescription: String, newDate: Date, newLocation: String, newCoverImage: String, newGalleryImages: [String]?
     ) {
         guard let memoryIndex = memories.firstIndex(where: { $0.id == memory.id }) else { return }
         
@@ -201,7 +200,7 @@ class MemoryViewModel : ObservableObject {
         updatedMemory.date = newDate
         updatedMemory.location = newLocation
         updatedMemory.coverImage = newCoverImage
-        //        updatedMemory.galleryImages = newGalleryImages
+        updatedMemory.galleryImages = newGalleryImages
         
         do {
             try FirebaseManager.shared.database

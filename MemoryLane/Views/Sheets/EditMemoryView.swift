@@ -14,7 +14,7 @@ struct EditMemoryView: View {
     
     @ObservedObject var memoryViewModel: MemoryViewModel
     
-    // Control the presentation of the sheet
+    // Control the presentation of the sheet itself
     @Binding var isPresented: Bool
     
     // Store new memory details
@@ -24,15 +24,14 @@ struct EditMemoryView: View {
     @State private var newDate = Date()
     @State private var newLocation = ""
     @State private var newCoverImage = ""
-    //    @State private var newGalleryImages = [""]
+    @State private var newGalleryImages = [""]
     
-    @State private var existingCoverImage: UIImage?
     @State private var showCoverImagePicker = false
+    @State private var existingCoverImage: UIImage?
     
-    @State private var existingGalleryImages: [UIImage?] = []
     @State private var showGalleryImagePicker = false
-    
-    
+    @State private var existingGalleryImages: [UIImage?] = []
+    @State private var selectedGalleryImages: [UIImage] = []
     
     // Autocomplete predictions for location
     @State private var locationInput = ""
@@ -126,7 +125,7 @@ struct EditMemoryView: View {
                     VStack(alignment: .leading){
                         Text("changeCover")
                         ZStack(alignment: .topTrailing) {
-                            // Existing image
+                            // Display existing cover image
                             if let existingCoverImage = existingCoverImage {
                                 Image(uiImage: existingCoverImage)
                                     .resizable()
@@ -143,9 +142,11 @@ struct EditMemoryView: View {
                                     showCoverImagePicker = true
                                 }
                                 .sheet(isPresented: $showCoverImagePicker) {
-                                    CoverImagePicker(selectedImage: $existingCoverImage, isPickerShowing: $showCoverImagePicker)
+                                    // Open image picker view
+                                    SingleImagePicker(selectedImage: $existingCoverImage, isPickerShowing: $showCoverImagePicker)
                                 }
                         }
+                        .padding(.top, 12)
                     }
                 }
                 .listRowBackground(Color.clear)
@@ -158,19 +159,45 @@ struct EditMemoryView: View {
                     VStack(alignment: .leading){
                         Text("changeGallery")
                         ScrollView(.horizontal, showsIndicators: false) {
-                            HStack {
-                                ForEach(existingGalleryImages, id: \.self) { image in
-                                    if let image = image {
-                                        Image(uiImage: image)
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 200, height: 150)
-                                            .cornerRadius(8)
+                            HStack (spacing: 16) {
+                                ForEach(existingGalleryImages.indices, id: \.self) { index in
+                                    ZStack(alignment: .topTrailing) {
+                                        if let image = existingGalleryImages[index] {
+                                            Image(uiImage: image)
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 200, height: 150)
+                                                .cornerRadius(12)
+                                            
+                                            // Icon to trigger gallery image deletion
+                                            Image(systemName: "x.circle.fill")
+                                                .foregroundColor(colorScheme == .dark ? Color.orange : Color.blue)
+                                                .font(.title2)
+                                                .offset(x: 10, y: -10)
+                                                .onTapGesture {
+                                                    deleteGalleryImage(at: index)
+                                                }
+                                        }
                                     }
-                                    // Icon to trigger image picker
-//                                    Image(systemName: "pencil.circle.fill")
-//                                        .foregroundColor(colorScheme == .dark ? Color.orange : Color.blue)
-//                                        .font(.title2)
+                                    .padding(.top, 12)
+                                }
+                                // Icon to trigger image picker
+                                Button(action: {
+                                    showGalleryImagePicker = true
+                                }) {
+                                    Image(systemName: "plus.circle.fill")
+                                        .foregroundColor(colorScheme == .dark ? Color.orange : Color.blue)
+                                        .font(.largeTitle)
+                                        .padding(.leading, 16)
+                                }
+                                .sheet(isPresented: $showGalleryImagePicker, onDismiss: {
+                                    // Add the selected images to existingGalleryImages when Picker is closed
+                                    existingGalleryImages.append(contentsOf: selectedGalleryImages)
+                                    // Reset selectedGalleryImages
+                                    selectedGalleryImages = []
+                                }) {
+                                    // Open image picker view
+                                    MultipleImagesPicker(selectedImages: $selectedGalleryImages, isPickerShowing: $showGalleryImagePicker)
                                 }
                             }
                         }
@@ -178,12 +205,11 @@ struct EditMemoryView: View {
                 }
                 .listRowBackground(Color.clear)
                 .onAppear {
-                    // Load existing cover image from Firebase Storage
+                    // Load existing gallery images from Firebase Storage
                     if existingGalleryImages.isEmpty {
                         loadExistingGalleryImages()
                     }
                 }
-                
                 
                 // Update the memory
                 Section {
@@ -293,35 +319,69 @@ struct EditMemoryView: View {
         }
     }
     
+    func deleteGalleryImage(at index: Int) {
+        existingGalleryImages.remove(at: index)
+    }
+    
     func updateMemory() {
         if let coverImage = existingCoverImage {
             // Upload cover image to Firebase Storage
             memoryViewModel.uploadImageToFirebase(selectedImage: coverImage) { [self] result in
                 switch result {
                 case .success(let uploadedCoverImageUrl):
-                    // Update memory with the new cover image
-                    memoryViewModel.editMemory(
-                        memory: memory,
-                        newCategory: newSelectedCategory,
-                        newTitle: newTitle,
-                        newDescription: newDescription,
-                        newDate: newDate,
-                        newLocation: newLocation,
-                        newCoverImage: uploadedCoverImageUrl
-                    )
+                    // Handle gallery images
+                    var galleryImageUrls: [String] = []
+                    
+                    // Use DispatchGroup to wait for all gallery images to upload
+                    let dispatchGroup = DispatchGroup()
+                    
+                    for galleryImage in existingGalleryImages {
+                        dispatchGroup.enter()
+                        
+                        memoryViewModel.uploadImageToFirebase(selectedImage: galleryImage) { result in
+                            switch result {
+                            case .success(let uploadedGalleryImageUrl):
+                                // When gallery images uploaded successfully, append URL to galleryImageURLs
+                                galleryImageUrls.append(uploadedGalleryImageUrl)
+                            case .failure(let error):
+                                print("Error uploading gallery image: \(error)")
+                            }
+                            dispatchGroup.leave()
+                        }
+                    }
+                    
+                    // Notify when all gallery images are uploaded
+                    dispatchGroup.notify(queue: .main) {
+                        
+                        // Update memory with the new cover and gallery images
+                        memoryViewModel.editMemory(
+                            memory: memory,
+                            newCategory: newSelectedCategory,
+                            newTitle: newTitle,
+                            newDescription: newDescription,
+                            newDate: newDate,
+                            newLocation: newLocation,
+                            newCoverImage: uploadedCoverImageUrl,
+                            newGalleryImages: galleryImageUrls
+                        )
+                        
+                        // Close sheet after saving
+                        isPresented = false
+                    }
                 case .failure(let error):
                     print("Error uploading cover image: \(error)")
+                    
+                    // Close sheet after saving even if there's an error with cover image upload
+                    isPresented = false
                 }
             }
         }
-        // Close sheet after saving
-        isPresented = false
     }
 }
-//
-//struct EditMemoryView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        EditMemoryView(memoryViewModel: MemoryViewModel(), isPresented: .constant(true), memory: Memory.exampleMemory)
-//    }
-//}
+
+struct EditMemoryView_Previews: PreviewProvider {
+    static var previews: some View {
+        EditMemoryView(memoryViewModel: MemoryViewModel(), isPresented: .constant(true), memory: Memory.exampleMemory)
+    }
+}
 

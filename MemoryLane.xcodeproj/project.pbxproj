@@ -62,14 +62,16 @@
 		825C75FD2B5EC4BE00C2B436 /* EditMemoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825C75FC2B5EC4BE00C2B436 /* EditMemoryView.swift */; };
 		8261E3142B694863000793F6 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8261E3132B694863000793F6 /* SearchView.swift */; };
 		8261E3162B6948A6000793F6 /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8261E3152B6948A6000793F6 /* FavoritesView.swift */; };
-		8261E3182B6A7078000793F6 /* CoverImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8261E3172B6A7078000793F6 /* CoverImagePicker.swift */; };
+		8261E3182B6A7078000793F6 /* SingleImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8261E3172B6A7078000793F6 /* SingleImagePicker.swift */; };
 		8261E31A2B6AA139000793F6 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8261E3192B6AA139000793F6 /* Errors.swift */; };
 		8261E31C2B6BE7A0000793F6 /* SingleMemoryItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8261E31B2B6BE7A0000793F6 /* SingleMemoryItemView.swift */; };
-		8261E31E2B70D7ED000793F6 /* GalleryImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8261E31D2B70D7ED000793F6 /* GalleryImagePicker.swift */; };
+		8261E31E2B70D7ED000793F6 /* MultipleImagesPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8261E31D2B70D7ED000793F6 /* MultipleImagesPicker.swift */; };
 		8261E3272B728AFD000793F6 /* GooglePlaces in Frameworks */ = {isa = PBXBuildFile; productRef = 8261E3262B728AFD000793F6 /* GooglePlaces */; };
 		8261E32B2B762759000793F6 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8261E32A2B762759000793F6 /* SearchBarView.swift */; };
 		8261E32D2B772F09000793F6 /* TimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8261E32C2B772F09000793F6 /* TimelineView.swift */; };
 		8261E32F2B7CACD3000793F6 /* NavigationLinkWithoutIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8261E32E2B7CACD3000793F6 /* NavigationLinkWithoutIndicator.swift */; };
+		8261E3372B8776D1000793F6 /* GoogleMapViewWithControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8261E3362B8776D1000793F6 /* GoogleMapViewWithControls.swift */; };
+		8261E3392B87A348000793F6 /* MapControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8261E3382B87A348000793F6 /* MapControlsView.swift */; };
 		82A3F8152B67B6E400ECAFDF /* Pflichtenheft-iOS_Martin-Roensch.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 82A3F8142B67B6E400ECAFDF /* Pflichtenheft-iOS_Martin-Roensch.pdf */; };
 		82A3F8192B68E97C00ECAFDF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 82A3F8182B68E97C00ECAFDF /* Localizable.xcstrings */; };
 		82F602D82B6439D600B951BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 82F602D72B6439D600B951BD /* GoogleService-Info.plist */; };
@@ -99,13 +101,15 @@
 		825C75FC2B5EC4BE00C2B436 /* EditMemoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditMemoryView.swift; sourceTree = "<group>"; };
 		8261E3132B694863000793F6 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		8261E3152B6948A6000793F6 /* FavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
-		8261E3172B6A7078000793F6 /* CoverImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverImagePicker.swift; sourceTree = "<group>"; };
+		8261E3172B6A7078000793F6 /* SingleImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImagePicker.swift; sourceTree = "<group>"; };
 		8261E3192B6AA139000793F6 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		8261E31B2B6BE7A0000793F6 /* SingleMemoryItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleMemoryItemView.swift; sourceTree = "<group>"; };
-		8261E31D2B70D7ED000793F6 /* GalleryImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryImagePicker.swift; sourceTree = "<group>"; };
+		8261E31D2B70D7ED000793F6 /* MultipleImagesPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleImagesPicker.swift; sourceTree = "<group>"; };
 		8261E32A2B762759000793F6 /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		8261E32C2B772F09000793F6 /* TimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineView.swift; sourceTree = "<group>"; };
 		8261E32E2B7CACD3000793F6 /* NavigationLinkWithoutIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLinkWithoutIndicator.swift; sourceTree = "<group>"; };
+		8261E3362B8776D1000793F6 /* GoogleMapViewWithControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapViewWithControls.swift; sourceTree = "<group>"; };
+		8261E3382B87A348000793F6 /* MapControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapControlsView.swift; sourceTree = "<group>"; };
 		82A3F8142B67B6E400ECAFDF /* Pflichtenheft-iOS_Martin-Roensch.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Pflichtenheft-iOS_Martin-Roensch.pdf"; sourceTree = "<group>"; };
 		82A3F8182B68E97C00ECAFDF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		82F602D72B6439D600B951BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -232,11 +236,13 @@
 			isa = PBXGroup;
 			children = (
 				8250BB682B5FB3300027E889 /* TabsView.swift */,
-				8250BB732B5FDE5F0027E889 /* GoogleMapsView.swift */,
 				8250BB642B5FAE940027E889 /* MemoryItemView.swift */,
 				8261E31B2B6BE7A0000793F6 /* SingleMemoryItemView.swift */,
 				8261E32A2B762759000793F6 /* SearchBarView.swift */,
 				8261E32E2B7CACD3000793F6 /* NavigationLinkWithoutIndicator.swift */,
+				8250BB732B5FDE5F0027E889 /* GoogleMapsView.swift */,
+				8261E3362B8776D1000793F6 /* GoogleMapViewWithControls.swift */,
+				8261E3382B87A348000793F6 /* MapControlsView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -245,8 +251,8 @@
 			isa = PBXGroup;
 			children = (
 				825C75AE2B5EA68D00C2B436 /* FirebaseManager.swift */,
-				8261E3172B6A7078000793F6 /* CoverImagePicker.swift */,
-				8261E31D2B70D7ED000793F6 /* GalleryImagePicker.swift */,
+				8261E3172B6A7078000793F6 /* SingleImagePicker.swift */,
+				8261E31D2B70D7ED000793F6 /* MultipleImagesPicker.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -410,8 +416,8 @@
 				8261E3162B6948A6000793F6 /* FavoritesView.swift in Sources */,
 				825C75F52B5EB69600C2B436 /* RegisterView.swift in Sources */,
 				8261E3142B694863000793F6 /* SearchView.swift in Sources */,
-				8261E3182B6A7078000793F6 /* CoverImagePicker.swift in Sources */,
-				8261E31E2B70D7ED000793F6 /* GalleryImagePicker.swift in Sources */,
+				8261E3182B6A7078000793F6 /* SingleImagePicker.swift in Sources */,
+				8261E31E2B70D7ED000793F6 /* MultipleImagesPicker.swift in Sources */,
 				8261E32B2B762759000793F6 /* SearchBarView.swift in Sources */,
 				825C75F12B5EAF7200C2B436 /* MemoryViewModel.swift in Sources */,
 				825C75EF2B5EADC000C2B436 /* Memory.swift in Sources */,
@@ -431,7 +437,9 @@
 				825C75EC2B5EA9CC00C2B436 /* User.swift in Sources */,
 				8261E31A2B6AA139000793F6 /* Errors.swift in Sources */,
 				8250BB6D2B5FC9F10027E889 /* MemoryDetailView.swift in Sources */,
+				8261E3372B8776D1000793F6 /* GoogleMapViewWithControls.swift in Sources */,
 				825C75F32B5EB47A00C2B436 /* LoginView.swift in Sources */,
+				8261E3392B87A348000793F6 /* MapControlsView.swift in Sources */,
 				825C759C2B5EA5C200C2B436 /* MemoryLaneApp.swift in Sources */,
 				8261E32D2B772F09000793F6 /* TimelineView.swift in Sources */,
 			);

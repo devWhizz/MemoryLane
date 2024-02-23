@@ -51,6 +51,7 @@ struct MemoryLaneApp: App {
                 // Display the LoginView if the user is not logged in
                 LoginView()
                     .environmentObject(userViewModel)
+                    .environmentObject(memoryViewModel)
                 // Set the preferred color scheme based on the dark mode settings
                     .preferredColorScheme(isDarkModeEnabled ? .dark : .light)
                     .onAppear {

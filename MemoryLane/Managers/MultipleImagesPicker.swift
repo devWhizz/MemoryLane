@@ -2,7 +2,7 @@
 //  ImagePicker.swift
 //  MemoryLane
 //
-//  Created by martin on 01.02.24.
+//  Created by martin on 05.02.24.
 //
 
 import Foundation
@@ -10,10 +10,11 @@ import UIKit
 import SwiftUI
 import PhotosUI
 
-// CoverImagePicker using PHPicker
-struct CoverImagePicker: UIViewControllerRepresentable {
+
+// MultipleImagesPicker using PHPicker
+struct MultipleImagesPicker: UIViewControllerRepresentable {
     
-    @Binding var selectedImage: UIImage?
+    @Binding var selectedImages: [UIImage]
     @Binding var isPickerShowing: Bool
     
     // Set color scheme
@@ -23,8 +24,8 @@ struct CoverImagePicker: UIViewControllerRepresentable {
         // Configure PHPicker
         var configuration = PHPickerConfiguration()
         configuration.filter = .images
-        // Allow only one image to be selected
-        configuration.selectionLimit = 1
+        // Allow up to 5 images to be selected
+        configuration.selectionLimit = 10
         
         // Create PHPickerViewController
         let picker = PHPickerViewController(configuration: configuration)
@@ -46,22 +47,27 @@ struct CoverImagePicker: UIViewControllerRepresentable {
     
     // Coordinator class to handle events from PHPickerViewController
     class Coordinator: NSObject, PHPickerViewControllerDelegate {
-        var parent: CoverImagePicker
+        var parent: MultipleImagesPicker
         
-        init(_ parent: CoverImagePicker) {
+        init(_ parent: MultipleImagesPicker) {
             self.parent = parent
         }
         
-        // Called when the user picks an image
         func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-            if let itemProvider = results.first?.itemProvider,
-               itemProvider.canLoadObject(ofClass: UIImage.self) {
+            for result in results {
+                let itemProvider = result.itemProvider
+                
+                guard itemProvider.canLoadObject(ofClass: UIImage.self) else {
+                    // Handle the absence of itemProvider, perhaps log an error
+                    continue
+                }
+                
                 // Load the selected image
-                itemProvider.loadObject(ofClass: UIImage.self) { (image, error) in
-                    if let image = image as? UIImage {
-                        // Update the selected image in the parent asynchronously on the main thread
+                itemProvider.loadObject(ofClass: UIImage.self) { loadedImage, error in
+                    if let image = loadedImage as? UIImage {
+                        // Update the selected images in the parent asynchronously on the main thread
                         DispatchQueue.main.async {
-                            self.parent.selectedImage = image
+                            self.parent.selectedImages.append(image)
                         }
                     }
                 }
@@ -72,4 +78,3 @@ struct CoverImagePicker: UIViewControllerRepresentable {
         }
     }
 }
-

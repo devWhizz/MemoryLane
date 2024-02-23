@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseAuth
 import FirebaseFirestore
+import FirebaseStorage
 
 
 class UserViewModel: ObservableObject {
@@ -59,7 +60,7 @@ class UserViewModel: ObservableObject {
     }
     
     // Attempt to register a new user with provided email and password
-    func register(name: String, email: String, password: String) {
+    func register(name: String, email: String, password: String, profilePicture: String) {
         firebaseManager.auth.createUser(withEmail: email, password: password) { authResult, error in
             if let error {
                 print("Registration failed:", error.localizedDescription)
@@ -69,26 +70,122 @@ class UserViewModel: ObservableObject {
             guard let authResult, let email = authResult.user.email else { return }
             print("User with email '\(email)' is registered with id '\(authResult.user.uid)'")
             
-            self.createUser(with: authResult.user.uid, name: name, email: email)
+            self.createUser(with: authResult.user.uid, name: name, email: email, profilePicture: profilePicture)
             
             // Automatically log in the newly registered user
             self.login(email: email, password: password)
         }
     }
     
-    // Log out the current user
-    func logout() {
-        do {
-            try firebaseManager.auth.signOut()
-            self.user = nil
-        } catch {
-            print("Error signing out: ", error.localizedDescription)
+    // Edit existing user
+    func editUser(name: String, newProfilePicture: UIImage? = nil) {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            // Handle the case where the user is not logged in
+            return
+        }
+        
+        let userRef = Firestore.firestore().collection("users").document(uid)
+        
+        var userData: [String: Any] = ["name": name]
+        
+        // Add the profile picture for updating if it has been passed
+        if let newProfilePicture = newProfilePicture {
+            // Upload the new profile picture to Firebase Storage
+            self.uploadProfilePicture(selectedImage: newProfilePicture) { result in
+                switch result {
+                case .success(let uploadedProfilePictureUrl):
+                    // Update the user data with the new profile picture URL
+                    userData["profilePicture"] = uploadedProfilePictureUrl
+                    
+                    userRef.updateData(userData) { error in
+                        if let error = error {
+                            print("Error updating user: \(error.localizedDescription)")
+                        } else {
+                            print("User updated successfully")
+                        }
+                    }
+                case .failure(let error):
+                    print("Error uploading new profile picture: \(error)")
+                }
+            }
+        } else {
+            // No new profile picture provided, update user data without it
+            userRef.updateData(userData) { error in
+                if let error = error {
+                    print("Error updating user: \(error.localizedDescription)")
+                } else {
+                    print("User updated successfully")
+                    // Optional: Refresh the local user data if needed
+                    self.fetchUser(with: uid)
+                }
+            }
         }
     }
     
-    func createUser(with id: String, name: String, email: String) {
+    // Upload image to Firebase Storage and provide the download URL
+    func uploadProfilePicture(selectedImage: UIImage?, completion: @escaping (Result<String, Error>) -> Void) {
+        // Ensure a valid image is provided
+        guard let selectedImage = selectedImage else {
+            // If no image is provided, invoke completion with an error
+            completion(.failure(ImageUploadError.missingImage))
+            return
+        }
+        
+        // Resize the image before converting to data
+        let resizedImage = resizeImage(image: selectedImage, targetSize: CGSize(width: 200, height: 200))
+        guard let imageData = resizedImage.jpegData(compressionQuality: 0.8) else {
+            // If image compression fails, invoke completion with an error
+            completion(.failure(ImageUploadError.imageCompressionError))
+            return
+        }
+        
+        // Create references to Firebase Storage
+        let storageRef = Storage.storage().reference()
+        let fileRef = storageRef.child("profilePictures/\(UUID().uuidString).jpg")
+        
+        // Upload image data to Firebase Storage
+        fileRef.putData(imageData, metadata: nil) { metadata, error in
+            if let error = error {
+                // If error during upload occurs, invoke completion with the error
+                completion(.failure(error))
+            } else {
+                // If upload is successful, obtain the download URL
+                fileRef.downloadURL { url, error in
+                    guard let downloadURL = url else {
+                        // If URL retrieval fails, invoke completion with the error
+                        completion(.failure(error ?? ImageUploadError.missingImage))
+                        return
+                    }
+                    
+                    // Invoke completion with the success and the URL string
+                    completion(.success(downloadURL.absoluteString))
+                }
+            }
+        }
+    }
+    
+    func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
+        let size = image.size
+        let widthRatio  = targetSize.width  / size.width
+        let heightRatio = targetSize.height / size.height
+        
+        // Determine the scale factor that will fit the image within the target size while maintaining aspect ratio
+        let scaleFactor = min(widthRatio, heightRatio)
+        
+        // Calculate the new size based on the scale factor
+        let scaledSize = CGSize(width: size.width * scaleFactor, height: size.height * scaleFactor)
+        
+        let renderer = UIGraphicsImageRenderer(size: scaledSize)
+        let scaledImage = renderer.image { _ in
+            image.draw(in: CGRect(origin: .zero, size: scaledSize))
+        }
+        
+        return scaledImage
+    }
+    
+    func createUser(with id: String, name: String, email: String, profilePicture: String) {
         // Create a FireUser object with the provided id, name and email
-        let user = User(id: id, name: name, email: email)
+        let user = User(id: id, name: name, email: email, profilePicture: profilePicture)
         
         // Try to save the user data to the Firestore database
         do {
@@ -120,6 +217,16 @@ class UserViewModel: ObservableObject {
             } catch {
                 print("Document isn't a User", error.localizedDescription)
             }
+        }
+    }
+    
+    // Log out the current user
+    func logout() {
+        do {
+            try firebaseManager.auth.signOut()
+            self.user = nil
+        } catch {
+            print("Error signing out: ", error.localizedDescription)
         }
     }
     

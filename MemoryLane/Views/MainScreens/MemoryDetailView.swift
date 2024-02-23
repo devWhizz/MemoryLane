@@ -79,7 +79,7 @@ struct MemoryDetailView: View {
                     // Display image gallery
                     if !memory.galleryImages!.isEmpty {
                         ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 8) {
+                            HStack(spacing: 16) {
                                 ForEach(memory.galleryImages!, id: \.self) { imageUrl in
                                     if let galleryImageURL = URL(string: imageUrl) {
                                         URLImage(galleryImageURL) { image in
@@ -98,8 +98,7 @@ struct MemoryDetailView: View {
                     }
                     ZStack(alignment: .bottom) {
                         // Display Google Map with the memory location
-                        GoogleMapView(address: memory.location)
-                            .frame(height: 300)
+                        GoogleMapViewWithControls(address: memory.location)
                         Text("\(memory.location)")
                             .font(.headline)
                             .foregroundColor(colorScheme == .dark ? .white : .black)
@@ -117,6 +116,10 @@ struct MemoryDetailView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                // Share memory
+                Button(action: shareMemory) {
+                    Image(systemName: "square.and.arrow.up")
+                }
                 // Trigger the EditMemory sheet
                 Button(action: editMemory) {
                     Image(systemName: "slider.horizontal.2.gobackward")
@@ -142,11 +145,19 @@ struct MemoryDetailView: View {
                 EditMemoryView(memoryViewModel: memoryViewModel, isPresented: $isEditMemoryViewPresented, memory: memory)
             }
         }
-        
     }
     
     private func editMemory() {
         isEditMemoryViewPresented.toggle()
+    }
+    
+    private func shareMemory() {
+        // Create an instance of UIActivityViewController with the content to be shared
+        let activityViewController = UIActivityViewController(activityItems: [memory.title, memory.description, memory.date, memory.location, URL(string: memory.coverImage)!] + memory.galleryImages!.compactMap { URL(string: $0) }, applicationActivities: nil)
+        
+        // Present the UIActivityViewController
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
+        windowScene.windows.first?.rootViewController?.present(activityViewController, animated: true, completion: nil)
     }
     
 }

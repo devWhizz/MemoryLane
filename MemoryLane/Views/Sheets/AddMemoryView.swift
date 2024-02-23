@@ -71,7 +71,7 @@ struct AddMemoryView: View {
                                 Text("description")
                                     .foregroundColor(.gray.opacity(0.6))
                                     .padding(.top, 10)
-
+                                
                             }
                             TextEditor(text: $description)
                                 .frame(minHeight: 100)
@@ -142,7 +142,7 @@ struct AddMemoryView: View {
                         }
                     }
                     .sheet(isPresented: $isCoverImagePickerShowing, content: {
-                        CoverImagePicker(selectedImage: $selectedCoverImage, isPickerShowing: $isCoverImagePickerShowing)
+                        SingleImagePicker(selectedImage: $selectedCoverImage, isPickerShowing: $isCoverImagePickerShowing)
                     })
                 }
                 
@@ -154,7 +154,7 @@ struct AddMemoryView: View {
                         }, label: {
                             Text("selectGalleryImages")
                                 .foregroundColor(colorScheme == .dark ? Color.orange : Color.blue)
-
+                            
                         })
                         if !selectedGalleryImages.isEmpty {
                             ScrollView(.horizontal, showsIndicators: false) {
@@ -172,16 +172,15 @@ struct AddMemoryView: View {
                         }
                     }
                     .sheet(isPresented: $isGalleryImagePickerShowing, content: {
-                        GalleryImagePicker(selectedImages: $selectedGalleryImages, isPickerShowing: $isGalleryImagePickerShowing)
+                        MultipleImagesPicker(selectedImages: $selectedGalleryImages, isPickerShowing: $isGalleryImagePickerShowing)
                     })
-                    
                 }
                 
                 // Set favorite status
                 Section {
                     Toggle("favoriteMemory", isOn: $isFavorite)
                         .toggleStyle(SwitchToggleStyle(tint: .orange))
-
+                    
                 }
                 
                 // Create and save the new memory
@@ -205,7 +204,7 @@ struct AddMemoryView: View {
                     }) {
                         Image(systemName: "xmark.circle")
                             .foregroundColor(colorScheme == .dark ? Color.orange : Color.blue)
-
+                        
                     }
                 }
             }
