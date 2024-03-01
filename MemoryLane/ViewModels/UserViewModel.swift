@@ -59,21 +59,38 @@ class UserViewModel: ObservableObject {
         }
     }
     
-    // Attempt to register a new user with provided email and password
-    func register(name: String, email: String, password: String, profilePicture: String) {
+    func registerUser(name: String, email: String, password: String, selectedProfilePicture: UIImage?) {
         firebaseManager.auth.createUser(withEmail: email, password: password) { authResult, error in
-            if let error {
+            if let error = error {
                 print("Registration failed:", error.localizedDescription)
                 return
             }
             
-            guard let authResult, let email = authResult.user.email else { return }
-            print("User with email '\(email)' is registered with id '\(authResult.user.uid)'")
+            guard let authResult = authResult, let userEmail = authResult.user.email else { return }
+            print("User with email '\(userEmail)' is registered with id '\(authResult.user.uid)'")
             
-            self.createUser(with: authResult.user.uid, name: name, email: email, profilePicture: profilePicture)
-            
-            // Automatically log in the newly registered user
-            self.login(email: email, password: password)
+            if let profilePicture = selectedProfilePicture {
+                // Upload profile picture to Firebase Storage
+                self.uploadProfilePicture(selectedImage: profilePicture) { result in
+                    switch result {
+                    case .success(let uploadedProfilePictureUrl):
+                        // Create user after the image is uploaded successfully
+                        self.createUser(with: authResult.user.uid, name: name, email: userEmail, profilePicture: uploadedProfilePictureUrl)
+                        
+                        // Automatically log in the newly registered user
+                        self.login(email: userEmail, password: password)
+                    case .failure(let error):
+                        print("Error uploading profile picture: \(error)")
+                    }
+                }
+            } else {
+                // Use placeholder image URL if no image is selected
+                let placeholderImageUrl = "https://firebasestorage.googleapis.com/v0/b/memorylane-mobileapp.appspot.com/o/placeholder-user.jpg?alt=media&token=4d4d5fce-ac35-4bc8-913c-b50d87d5c748"
+                self.createUser(with: authResult.user.uid, name: name, email: userEmail, profilePicture: placeholderImageUrl)
+                
+                // Automatically log in the newly registered user
+                self.login(email: userEmail, password: password)
+            }
         }
     }
     

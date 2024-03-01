@@ -88,6 +88,7 @@ struct AddMemoryView: View {
                 Section {
                     VStack (alignment: .leading) {
                         TextField("location", text: $locationInput)
+                            .disableAutocorrection(true)
                         // Trigger getPlacePredictions() when the input changes
                             .onReceive(Just(locationInput)) { _ in
                                 getPlacePredictions(for: locationInput)
@@ -246,7 +247,7 @@ struct AddMemoryView: View {
     
     // Disable save button if not all necessary fields are filled in
     private var disableSaving: Bool {
-        selectedCategory.isEmpty || title.isEmpty || description.isEmpty || location.isEmpty || selectedCoverImage == nil
+        selectedCategory.isEmpty || title.isEmpty || location.isEmpty || selectedCoverImage == nil
     }
     
     func uploadAndCreateMemory() {

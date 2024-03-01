@@ -12,9 +12,3 @@ enum ImageUploadError: Error {
     case missingImage
     case imageCompressionError
 }
-
-enum AuthenticationError: Error {
-    case userNotLoggedIn
-    case profilePictureUploadError(Error)
-}
-

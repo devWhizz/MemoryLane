@@ -27,6 +27,8 @@ struct ProfileView: View {
     @State private var showProfilePicturePicker = false
     @State private var existingProfilePicture: UIImage?
     @State private var saveButtonIsShowing = false
+    @State private var isProfilePictureLoaded = false
+    
     
     var body: some View {
         NavigationView {
@@ -124,7 +126,11 @@ struct ProfileView: View {
             }
             .onAppear {
                 memoryViewModel.fetchMemories()
-                loadExistingProfilePicture()
+                
+                if !isProfilePictureLoaded {
+                    loadExistingProfilePicture()
+                    isProfilePictureLoaded = true
+                }
             }
         }
     }

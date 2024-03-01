@@ -14,7 +14,7 @@ struct MemoryDetailView: View {
     // Observe changes in the MemoryViewModel
     @ObservedObject var memoryViewModel: MemoryViewModel
     
-    // Control the visibility of the sheet
+    // Control the visibility of the editMemory sheet
     @State private var isEditMemoryViewPresented = false
     
     @State private var showingDeleteAlert = false
@@ -86,7 +86,7 @@ struct MemoryDetailView: View {
                                             image
                                                 .resizable()
                                                 .scaledToFill()
-                                                .frame(width: 250, height: 150)
+                                                .frame(width: 300, height: 185)
                                                 .cornerRadius(8)
                                         }
                                         .padding(.vertical, 16)
@@ -152,12 +152,69 @@ struct MemoryDetailView: View {
     }
     
     private func shareMemory() {
-        // Create an instance of UIActivityViewController with the content to be shared
-        let activityViewController = UIActivityViewController(activityItems: [memory.title, memory.description, memory.date, memory.location, URL(string: memory.coverImage)!] + memory.galleryImages!.compactMap { URL(string: $0) }, applicationActivities: nil)
+        guard memory.galleryImages != nil else {
+            // Handle the case when galleryImages is nil
+            return
+        }
+        
+        // Format memory details as a string
+        let formattedDetails = formattedMemoryDetails()
+        
+        // Create UIActivityViewController with the formatted details
+        let activityViewController = UIActivityViewController(activityItems: [formattedDetails], applicationActivities: nil)
         
         // Present the UIActivityViewController
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
         windowScene.windows.first?.rootViewController?.present(activityViewController, animated: true, completion: nil)
+    }
+    
+    // Format memory details into a string
+    func formattedMemoryDetails() -> String {
+        let title = memory.title
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .long
+        
+        let formattedDate = dateFormatter.string(from: memory.date)
+        
+        let description = memory.description
+        let location = memory.location
+        let coverImageURL: String
+        
+        // Check if the coverImage URL is valid
+        if let url = URL(string: memory.coverImage) {
+            coverImageURL = url.absoluteString
+        } else {
+            coverImageURL = "N/A"
+        }
+        
+        var galleryImagesString = "No gallery images"
+        
+        if let galleryImages = memory.galleryImages {
+            // Join gallery images into a formatted string
+            galleryImagesString = galleryImages.joined(separator: "\n\n")
+        }
+        
+        // Final formatted string with all memory details
+        let formattedString =
+            """
+            Hey there, check out this Memory:
+            
+            Title: \(title)
+            Date: \(formattedDate)
+            Location: \(location)
+            
+            Description:
+            \(description)
+            
+            Cover Image:
+            \(coverImageURL)
+            
+            Gallery Images:
+            \(galleryImagesString)
+            """
+        
+        return formattedString
     }
     
 }

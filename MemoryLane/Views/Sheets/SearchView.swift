@@ -20,7 +20,6 @@ struct SearchView: View {
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        
         NavigationView {
             ScrollView {
                 VStack(alignment: .center, spacing: 12) {

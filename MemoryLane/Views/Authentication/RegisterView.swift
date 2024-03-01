@@ -140,7 +140,7 @@ struct RegisterView: View {
                     if !password.isEmpty && password.count < 6 {
                         showAlert = true
                     } else {
-                        uploadAndRegisterUser()
+                        register()
                     }
                 }) {
                     Text("registerNow")
@@ -174,36 +174,17 @@ struct RegisterView: View {
         }
     }
     
-    func uploadAndRegisterUser() {
-        if let profilePicture = selectedProfilePicture {
-            // Upload profile picture to Firebase Storage
-            memoryViewModel.uploadImageToFirebase(selectedImage: profilePicture) { [self] result in
-                switch result {
-                case .success(let uploadedProfilePictureUrl):
-                    // Create user after image is uploaded successfully
-                    register(profilePictureUrl: uploadedProfilePictureUrl)
-                case .failure(let error):
-                    print("Error uploading profile picture: \(error)")
-                }
-            }
-        } else {
-            // Use placeholder image URL if no image is selected
-            let placeholderImageUrl = "https://firebasestorage.googleapis.com/v0/b/memorylane-mobileapp.appspot.com/o/placeholder-user.jpg?alt=media&token=4d4d5fce-ac35-4bc8-913c-b50d87d5c748"
-            register(profilePictureUrl: placeholderImageUrl)
-        }
-    }
-    
-    
-    // Perform user registration
-    private func register(profilePictureUrl: String) {
-        userViewModel.register(name: name, email: email, password: password, profilePicture: profilePictureUrl)
-    }
-    
     // Check the validity of user input
     private func isValidInput() -> Bool {
         let minCharacterCount = 6
         return password.count >= minCharacterCount
     }
+    
+    // Perform user login
+    private func register() {
+        userViewModel.registerUser(name: name, email: email, password: password, selectedProfilePicture: selectedProfilePicture)
+    }
+    
 }
 
 struct RegisterView_Previews: PreviewProvider {

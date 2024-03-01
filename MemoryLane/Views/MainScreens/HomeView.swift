@@ -17,12 +17,29 @@ struct HomeView: View {
     @State private var isAddMemoryViewPresented = false
     @State private var isSearchViewPresented = false
     
+    // Define a mapping between categories and their localized translations
+    let categoryTranslations: [String: String] = [
+        "vacations": NSLocalizedString("vacations", comment: ""),
+        "birthdays": NSLocalizedString("birthdays", comment: ""),
+        "holidays": NSLocalizedString("holidays", comment: ""),
+        "achievements": NSLocalizedString("achievements", comment: ""),
+        "adventures": NSLocalizedString("adventures", comment: ""),
+        "family": NSLocalizedString("family", comment: ""),
+        "creativity": NSLocalizedString("creativity", comment: "")
+    ]
+    
     var body: some View {
         NavigationView {
             ScrollView{
                 VStack (alignment: .leading) {
-                    // Iterate through memory categories
-                    ForEach(memoryViewModel.memoryCategories, id: \.self) { category in
+                    // Iterate through memory categories, sorted alphabetically based on localized translations
+                    ForEach(memoryViewModel.memoryCategories.sorted(by: { (category1, category2) in
+                        // Obtain translations for category names or use the original names as fallback
+                        let translation1 = categoryTranslations[category1] ?? category1
+                        let translation2 = categoryTranslations[category2] ?? category2
+                        // Compare the translated category names in a localized manner
+                        return translation1.localizedCompare(translation2) == .orderedAscending
+                    }), id: \.self) { category in
                         // Display section only if there are memories in that category
                         if let categoryMemories = memoryViewModel.memoriesByCategory[category] {
                             // Section title
@@ -34,8 +51,8 @@ struct HomeView: View {
                             
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 16) {
-                                    // Iterate through memories in the current category
-                                    ForEach(categoryMemories) { memory in
+                                    // Iterate through memories in the current category, sorted by date
+                                    ForEach(categoryMemories.sorted(by: { $0.date > $1.date })) { memory in
                                         NavigationLink(
                                             destination: MemoryDetailView(memoryViewModel: memoryViewModel, memory: memory),
                                             label: {

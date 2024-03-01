@@ -92,6 +92,7 @@ struct EditMemoryView: View {
                                 getPlacePredictions(for: $0)
                             }
                         ))
+                        .disableAutocorrection(true)
                         
                         if !locationPredictions.isEmpty {
                             // Display list of suggested locations

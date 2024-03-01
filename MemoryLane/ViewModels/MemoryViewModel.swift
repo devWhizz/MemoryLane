@@ -317,7 +317,6 @@ class MemoryViewModel : ObservableObject {
             }
     }
     
-    
     // Remove Firestore listener
     func removeListener() {
         memories.removeAll()

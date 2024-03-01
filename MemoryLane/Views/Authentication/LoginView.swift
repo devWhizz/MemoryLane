@@ -26,14 +26,12 @@ struct LoginView: View {
     // Control the display of the alert
     @State private var showAlert = false
     
-    
     // Disable login button if email or password is empty
     private var disablLogin: Bool {
         email.isEmpty || !isValidInput()
     }
     
     var body: some View {
-        
         VStack(spacing: 16){
             Spacer()
             VStack {
@@ -67,7 +65,6 @@ struct LoginView: View {
                     )
                     .background(colorScheme == .dark ? .black.opacity(0.5) : .white.opacity(0.8))
                 
-                
                 // Trigger user login
                 Button("login", action: login)
                     .disabled(disablLogin)
@@ -78,7 +75,6 @@ struct LoginView: View {
                     .cornerRadius(10)
                     .padding(.top, 12)
                     .padding(.bottom, 24)
-                
                 
                 // Text button for register sheet
                 Button(action: {
@@ -94,7 +90,6 @@ struct LoginView: View {
                         .presentationDetents([.medium])
                         .presentationDragIndicator(.hidden)
                 }
-                
             }
             .padding(32)
             .background(colorScheme == .dark ? .black.opacity(0.7) : .white.opacity(0.8))
@@ -108,12 +103,6 @@ struct LoginView: View {
                 .edgesIgnoringSafeArea(.all)
         )
         .padding(.horizontal, 48)
-        
-    }
-    
-    // Perform user login
-    private func login() {
-        userViewModel.login(email: email, password: password)
     }
     
     // Check the validity of user input
@@ -121,8 +110,13 @@ struct LoginView: View {
         let minCharacterCount = 6
         return password.count >= minCharacterCount
     }
+    
+    // Perform user login
+    private func login() {
+        userViewModel.login(email: email, password: password)
+    }
+    
 }
-
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
