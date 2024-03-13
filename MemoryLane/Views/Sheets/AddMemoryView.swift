@@ -130,6 +130,12 @@ struct AddMemoryView: View {
                         Button(action: {
                             isCoverImagePickerShowing = true
                         }, label: {
+                            Image(systemName: "photo.fill")
+                                .foregroundColor(colorScheme == .dark ? Color.orange : Color.blue)
+                        })
+                        Button(action: {
+                            isCoverImagePickerShowing = true
+                        }, label: {
                             Text("selectCoverImage")
                                 .foregroundColor(colorScheme == .dark ? Color.orange : Color.blue)
                         })
@@ -150,13 +156,23 @@ struct AddMemoryView: View {
                 // Pick gallery images
                 Section{
                     VStack (alignment: .leading){
-                        Button(action: {
-                            isGalleryImagePickerShowing = true
-                        }, label: {
-                            Text("selectGalleryImages")
-                                .foregroundColor(colorScheme == .dark ? Color.orange : Color.blue)
-                            
-                        })
+                        HStack{
+                            Button(action: {
+                                isGalleryImagePickerShowing = true
+                            }, label: {
+                                Image(systemName: "photo.fill.on.rectangle.fill")
+                                    .foregroundColor(colorScheme == .dark ? Color.orange : Color.blue)
+                                
+                            })
+                            Button(action: {
+                                isGalleryImagePickerShowing = true
+                            }, label: {
+                                Text("selectGalleryImages")
+                                    .foregroundColor(colorScheme == .dark ? Color.orange : Color.blue)
+                                
+                            })
+                            Spacer()
+                        }
                         if !selectedGalleryImages.isEmpty {
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack {
@@ -180,8 +196,7 @@ struct AddMemoryView: View {
                 // Set favorite status
                 Section {
                     Toggle("favoriteMemory", isOn: $isFavorite)
-                        .toggleStyle(SwitchToggleStyle(tint: .orange))
-                    
+                        .toggleStyle(SwitchToggleStyle(tint: colorScheme == .dark ? .orange : .blue))
                 }
                 
                 // Create and save the new memory

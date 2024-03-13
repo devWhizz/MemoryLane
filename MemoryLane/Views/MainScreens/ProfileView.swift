@@ -115,7 +115,7 @@ struct ProfileView: View {
             .navigationBarTitle("profile")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                    Image(systemName: "rectangle.portrait.and.arrow.forward")
                         .foregroundColor(.accentColor)
                         .onTapGesture {
                             // Trigger logout when the icon is tapped

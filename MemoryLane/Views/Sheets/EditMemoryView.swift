@@ -151,6 +151,7 @@ struct EditMemoryView: View {
                     }
                 }
                 .listRowBackground(Color.clear)
+                .padding(.leading, -16)
                 .onAppear {
                     // Load existing cover image from Firebase Storage
                     loadExistingCoverImage()
@@ -205,6 +206,8 @@ struct EditMemoryView: View {
                     }
                 }
                 .listRowBackground(Color.clear)
+                .padding(.leading, -16)
+                .padding(.top, -12)
                 .onAppear {
                     // Load existing gallery images from Firebase Storage
                     if existingGalleryImages.isEmpty {

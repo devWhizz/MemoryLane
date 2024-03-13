@@ -770,13 +770,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wähle ein Titelbild"
+            "value" : "Titelbild"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select a cover image"
+            "value" : "Cover image"
           }
         }
       }
@@ -785,14 +785,14 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Wähle Galerielbilder"
+            "state" : "translated",
+            "value" : "Galeriebilder"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select gallery images"
+            "value" : "Gallery images"
           }
         }
       }

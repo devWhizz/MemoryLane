@@ -63,7 +63,7 @@ class MemoryViewModel : ObservableObject {
     }
     
     // Create a new memory document in Firestore
-    func createMemory(title: String, description: String, category: String, date: Date, location: String, isFavorite: Bool, coverImage: String, galleryImages: [String]) {
+    func createMemory(title: String, description: String, category: String, date: Date, location: String, isFavorite: Bool, coverImage: String, galleryImages: [String]?) {
         // Ensure there is a valid user ID available
         guard let userId = FirebaseManager.shared.userId else {
             return
@@ -84,9 +84,6 @@ class MemoryViewModel : ObservableObject {
             coverImage: coverImage,
             galleryImages: galleryImages
         )
-        
-        // Remove empty strings from the galleryImages array
-        memory.galleryImages = memory.galleryImages?.filter { !$0.isEmpty }
         
         // Attempt to add the memory document to the Firestore collection
         do {
