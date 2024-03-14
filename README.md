@@ -4,11 +4,11 @@
 
 <br>
  
-![](https://mediadesign.solutions/wp-content/uploads/2024/03/MemoryLane_home.png)
-![](https://mediadesign.solutions/wp-content/uploads/2024/03/MemoryLane_timeline.png)
-![](https://mediadesign.solutions/wp-content/uploads/2024/03/MemoryLane_detail1.png)
-![](https://mediadesign.solutions/wp-content/uploads/2024/03/MemoryLane_detail2.png)
-![](https://mediadesign.solutions/wp-content/uploads/2024/03/MemoryLane_add.png)
+![](https://mediadesign.solutions/wp-content/uploads/2024/03/MemoryLane_homeview.png)
+![](https://mediadesign.solutions/wp-content/uploads/2024/03/MemoryLane_timelineview.png)
+![](https://mediadesign.solutions/wp-content/uploads/2024/03/MemoryLane_detailview1.png)
+![](https://mediadesign.solutions/wp-content/uploads/2024/03/MemoryLane_detailview2.png)
+![](https://mediadesign.solutions/wp-content/uploads/2024/03/MemoryLane_addmemoryview.png)
 
 <br>
 
@@ -132,19 +132,19 @@ This view displays a list of preferred memories. Users can non-prefer memories t
 
 ![Static Badge](https://img.shields.io/badge/Key_File-SearchView-blue)
 
-This fragment allows the user to browse all of their stored memories by typing keywords into the search field. Search results appear in a list adapting to the input query.  
+This view allows the user to browse all of their stored memories by typing keywords into the search field. Search results appear in a list adapting to the input query.  
 
 <br>
 
 ![Static Badge](https://img.shields.io/badge/Key_File-MemoryDetailView-blue)
 
-This fragment displays detailed information about a specific memory. It is used to view memory details such as the title, descrioption, cover and gallery images, date and location displayed on Google Maps. The user has the opttion to share, edit, delete and favorize the memory on this view.
+This view displays detailed information about a specific memory. It is used to view memory details such as the title, descrioption, cover and gallery images, date and location displayed on Google Maps. The user has the opttion to share, edit, delete and favorize the memory on this view.
 
 <br>
 
 ![Static Badge](https://img.shields.io/badge/Key_File-ProfileView-blue)
 
-This fragment provides users with their profile and app settings. It includes options to toggle Dark Mode, and change the user profile picture and name.
+This view provides users with their profile and app settings. It includes options to toggle Dark Mode, and change the user profile picture and name.
 
 <br>
 
@@ -173,7 +173,7 @@ The favorizing feature allows users to mark their favorite memories. Here's how 
 1. Browse through the list of memories.
 2. When you find a memory that you'd like to favorize, navigate to its detail view and click the heart-shaped "Like" icon associated with that memory.
 3. The memory will be added to your list of liked memories for easy access and reference.
-4. You can always get to them by navigating to the FavoritesView from the tab bar (heart icon)
+4. You can always get to them by navigating to the FavoritesView from the tab bar (heart icon).
 
 <br>
 
