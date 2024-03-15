@@ -8,6 +8,7 @@
 import SwiftUI
 import GoogleMaps
 
+
 struct MapControlsView: View {
     
     @Binding var mapType: GMSMapViewType

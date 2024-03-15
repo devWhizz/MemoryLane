@@ -17,25 +17,9 @@ struct EditMemoryView: View {
     // Control the presentation of the sheet itself
     @Binding var isPresented: Bool
     
-    // Store new memory details
-    @State private var newSelectedCategory = ""
-    @State private var newTitle = ""
-    @State private var newDescription = ""
-    @State private var newDate = Date()
-    @State private var newLocation = ""
-    @State private var newCoverImage = ""
-    @State private var newGalleryImages = [""]
-    
+    // Control the presentation of the photo libraries
     @State private var showCoverImagePicker = false
-    @State private var existingCoverImage: UIImage?
-    
     @State private var showGalleryImagePicker = false
-    @State private var existingGalleryImages: [UIImage?] = []
-    @State private var selectedGalleryImages: [UIImage] = []
-    
-    // Autocomplete predictions for location
-    @State private var locationInput = ""
-    @State private var locationPredictions: [GMSAutocompletePrediction] = []
     
     // Set color scheme
     @Environment(\.colorScheme) var colorScheme
@@ -43,39 +27,28 @@ struct EditMemoryView: View {
     // Memory object to display current details
     var memory: Memory
     
-    // Set category choices
-    let categories = [
-        NSLocalizedString("vacations", comment: ""),
-        NSLocalizedString("birthdays", comment: ""),
-        NSLocalizedString("holidays", comment: ""),
-        NSLocalizedString("achievements", comment: ""),
-        NSLocalizedString("adventures", comment: ""),
-        NSLocalizedString("family", comment: ""),
-        NSLocalizedString("creativity", comment: "")
-    ]
-    
     var body: some View {
         NavigationView {
             Form {
                 Section {
-                    Picker("category", selection: $newSelectedCategory) {
-                        ForEach(categories, id: \.self) { category in
+                    Picker("category", selection: $memoryViewModel.newSelectedCategory) {
+                        ForEach(memoryViewModel.categories, id: \.self) { category in
                             Text(category).tag(category)
                         }
                     }
                     
-                    TextField("title", text: $newTitle)
+                    TextField("title", text: $memoryViewModel.newTitle)
                     
                     VStack {
                         ZStack(alignment: .topLeading) {
-                            TextEditor(text: $newDescription)
+                            TextEditor(text: $memoryViewModel.newDescription)
                                 .frame(minHeight: 100)
                         }
                     }
                 }
                 
                 Section {
-                    DatePicker("date", selection: $newDate, displayedComponents: .date)
+                    DatePicker("date", selection: $memoryViewModel.newDate, displayedComponents: .date)
                 }
                 
                 Section {
@@ -83,21 +56,21 @@ struct EditMemoryView: View {
                         TextField("location", text: Binding(
                             get: {
                                 // Use the content of locationInput as initial text
-                                return newLocation.isEmpty ? locationInput : newLocation
+                                return memoryViewModel.newLocation.isEmpty ? memoryViewModel.locationInput : memoryViewModel.newLocation
                             },
                             set: {
                                 // Update locationInput and newLocation on text input
-                                locationInput = $0
-                                newLocation = $0
-                                getPlacePredictions(for: $0)
+                                memoryViewModel.locationInput = $0
+                                memoryViewModel.newLocation = $0
+                                memoryViewModel.getPlacePredictions(for: $0)
                             }
                         ))
                         .disableAutocorrection(true)
                         
-                        if !locationPredictions.isEmpty {
+                        if !memoryViewModel.locationPredictions.isEmpty {
                             // Display list of suggested locations
                             ScrollView {
-                                ForEach(locationPredictions, id: \.attributedPrimaryText.string) { prediction in
+                                ForEach(memoryViewModel.locationPredictions, id: \.attributedPrimaryText.string) { prediction in
                                     VStack(alignment: .leading) {
                                         Text(prediction.attributedPrimaryText.string)
                                             .font(.headline)
@@ -108,8 +81,8 @@ struct EditMemoryView: View {
                                             .foregroundColor(.gray)
                                     }
                                     .onTapGesture {
-                                        self.selectPlace(prediction)
-                                        print("Chosen location \(locationInput)")
+                                        self.memoryViewModel.selectEditedPlace(prediction)
+                                        print("Chosen location \(memoryViewModel.locationInput)")
                                     }
                                     .frame(height: 50)
                                 }
@@ -117,7 +90,7 @@ struct EditMemoryView: View {
                             .background(Color.clear)
                             .cornerRadius(10)
                             .padding(.top, 5)
-                            .frame(height: CGFloat(locationPredictions.count * 50))
+                            .frame(height: CGFloat(memoryViewModel.locationPredictions.count * 50))
                         }
                     }
                 }
@@ -127,7 +100,7 @@ struct EditMemoryView: View {
                         Text("changeCover")
                         ZStack(alignment: .topTrailing) {
                             // Display existing cover image
-                            if let existingCoverImage = existingCoverImage {
+                            if let existingCoverImage = memoryViewModel.existingCoverImage {
                                 Image(uiImage: existingCoverImage)
                                     .resizable()
                                     .scaledToFill()
@@ -144,7 +117,7 @@ struct EditMemoryView: View {
                                 }
                                 .sheet(isPresented: $showCoverImagePicker) {
                                     // Open image picker view
-                                    SingleImagePicker(selectedImage: $existingCoverImage, isPickerShowing: $showCoverImagePicker)
+                                    SingleImagePicker(selectedImage: $memoryViewModel.existingCoverImage, isPickerShowing: $showCoverImagePicker)
                                 }
                         }
                         .padding(.top, 12)
@@ -162,9 +135,9 @@ struct EditMemoryView: View {
                         Text("changeGallery")
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack (spacing: 16) {
-                                ForEach(existingGalleryImages.indices, id: \.self) { index in
+                                ForEach(memoryViewModel.existingGalleryImages.indices, id: \.self) { index in
                                     ZStack(alignment: .topTrailing) {
-                                        if let image = existingGalleryImages[index] {
+                                        if let image = memoryViewModel.existingGalleryImages[index] {
                                             Image(uiImage: image)
                                                 .resizable()
                                                 .scaledToFill()
@@ -194,12 +167,12 @@ struct EditMemoryView: View {
                                 }
                                 .sheet(isPresented: $showGalleryImagePicker, onDismiss: {
                                     // Add the selected images to existingGalleryImages when Picker is closed
-                                    existingGalleryImages.append(contentsOf: selectedGalleryImages)
+                                    memoryViewModel.existingGalleryImages.append(contentsOf: memoryViewModel.selectedNewGalleryImages)
                                     // Reset selectedGalleryImages
-                                    selectedGalleryImages = []
+                                    memoryViewModel.selectedNewGalleryImages = []
                                 }) {
                                     // Open image picker view
-                                    MultipleImagesPicker(selectedImages: $selectedGalleryImages, isPickerShowing: $showGalleryImagePicker)
+                                    MultipleImagesPicker(selectedImages: $memoryViewModel.selectedNewGalleryImages, isPickerShowing: $showGalleryImagePicker)
                                 }
                             }
                         }
@@ -210,7 +183,7 @@ struct EditMemoryView: View {
                 .padding(.top, -12)
                 .onAppear {
                     // Load existing gallery images from Firebase Storage
-                    if existingGalleryImages.isEmpty {
+                    if memoryViewModel.existingGalleryImages.isEmpty {
                         loadExistingGalleryImages()
                     }
                 }
@@ -218,8 +191,12 @@ struct EditMemoryView: View {
                 // Update the memory
                 Section {
                     Button("update") {
-                        updateMemory()
-                    }
+                        MemoryUploadManager.updateMemory(memoryViewModel, memory, memoryViewModel.newSelectedCategory, memoryViewModel.newTitle, memoryViewModel.newDescription, memoryViewModel.newDate, memoryViewModel.newLocation, memoryViewModel.existingCoverImage, memoryViewModel.existingGalleryImages.compactMap { $0 }) { success in
+                            if success {
+                                // Close sheet after saving
+                                isPresented = false
+                            }
+                        }                    }
                     .listRowBackground(colorScheme == .dark ? Color.orange : Color.blue)
                     .foregroundColor(colorScheme == .dark ? Color.black : Color.white)
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -241,44 +218,16 @@ struct EditMemoryView: View {
             .onAppear {
                 // Capitalize 1st letter to display correct category in picker
                 if let firstCharacter = memory.category.first {
-                    newSelectedCategory = String(firstCharacter).capitalized + memory.category.dropFirst()
+                    memoryViewModel.newSelectedCategory = String(firstCharacter).capitalized + memory.category.dropFirst()
                 }
-                newTitle = memory.title
-                newDescription = memory.description
-                newDate = memory.date
-                newLocation = memory.location
+                memoryViewModel.newTitle = memory.title
+                memoryViewModel.newDescription = memory.description
+                memoryViewModel.newDate = memory.date
+                memoryViewModel.newLocation = memory.location
             }
         }
     }
     
-    // Create a session token for Google Places API
-    let sessionToken = GMSAutocompleteSessionToken.init()
-    
-    // Fetch place predictions for a given query
-    func getPlacePredictions(for query: String) {
-        let placesClient = GMSPlacesClient.shared()
-        placesClient.findAutocompletePredictions(
-            fromQuery: query,
-            filter: nil,
-            sessionToken: sessionToken,
-            callback: { (results, error) in
-                if let error = error {
-                    print("Error fetching place predictions: \(error)")
-                    return
-                }
-                if let results = results {
-                    self.locationPredictions = results
-                }
-            }
-        )
-    }
-    
-    // Handle the selection of a place prediction
-    private func selectPlace(_ prediction: GMSAutocompletePrediction) {
-        self.locationPredictions = []
-        self.locationInput = prediction.attributedFullText.string
-        self.newLocation = prediction.attributedFullText.string
-    }
     
     // Function to load existing image from Firebase Storage
     func loadExistingCoverImage() {
@@ -290,7 +239,7 @@ struct EditMemoryView: View {
         URLSession.shared.dataTask(with: imageURL) { data, response, error in
             if let data = data, let image = UIImage(data: data) {
                 DispatchQueue.main.async {
-                    existingCoverImage = image
+                    memoryViewModel.existingCoverImage = image
                 }
             } else {
                 print("Error loading image: \(error?.localizedDescription ?? "Unknown error")")
@@ -314,7 +263,7 @@ struct EditMemoryView: View {
             URLSession.shared.dataTask(with: imageURL) { data, response, error in
                 if let data = data, let image = UIImage(data: data) {
                     DispatchQueue.main.async {
-                        existingGalleryImages.append(image)
+                        memoryViewModel.existingGalleryImages.append(image)
                     }
                 } else {
                     print("Error loading image: \(error?.localizedDescription ?? "Unknown error")")
@@ -323,63 +272,8 @@ struct EditMemoryView: View {
         }
     }
     
-    func deleteGalleryImage(at index: Int) {
-        existingGalleryImages.remove(at: index)
-    }
-    
-    func updateMemory() {
-        if let coverImage = existingCoverImage {
-            // Upload cover image to Firebase Storage
-            memoryViewModel.uploadImageToFirebase(selectedImage: coverImage) { [self] result in
-                switch result {
-                case .success(let uploadedCoverImageUrl):
-                    // Handle gallery images
-                    var galleryImageUrls: [String] = []
-                    
-                    // Use DispatchGroup to wait for all gallery images to upload
-                    let dispatchGroup = DispatchGroup()
-                    
-                    for galleryImage in existingGalleryImages {
-                        dispatchGroup.enter()
-                        
-                        memoryViewModel.uploadImageToFirebase(selectedImage: galleryImage) { result in
-                            switch result {
-                            case .success(let uploadedGalleryImageUrl):
-                                // When gallery images uploaded successfully, append URL to galleryImageURLs
-                                galleryImageUrls.append(uploadedGalleryImageUrl)
-                            case .failure(let error):
-                                print("Error uploading gallery image: \(error)")
-                            }
-                            dispatchGroup.leave()
-                        }
-                    }
-                    
-                    // Notify when all gallery images are uploaded
-                    dispatchGroup.notify(queue: .main) {
-                        
-                        // Update memory with the new cover and gallery images
-                        memoryViewModel.editMemory(
-                            memory: memory,
-                            newCategory: newSelectedCategory,
-                            newTitle: newTitle,
-                            newDescription: newDescription,
-                            newDate: newDate,
-                            newLocation: newLocation,
-                            newCoverImage: uploadedCoverImageUrl,
-                            newGalleryImages: galleryImageUrls
-                        )
-                        
-                        // Close sheet after saving
-                        isPresented = false
-                    }
-                case .failure(let error):
-                    print("Error uploading cover image: \(error)")
-                    
-                    // Close sheet after saving even if there's an error with cover image upload
-                    isPresented = false
-                }
-            }
-        }
+    private func deleteGalleryImage(at index: Int) {
+        memoryViewModel.existingGalleryImages.remove(at: index)
     }
 }
 

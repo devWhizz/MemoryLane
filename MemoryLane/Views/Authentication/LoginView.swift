@@ -16,20 +16,11 @@ struct LoginView: View {
     // Set color scheme
     @Environment(\.colorScheme) var colorScheme
     
-    // Track user input
-    @State private var email = ""
-    @State private var password = ""
-    
     // Control the display of the register sheet
     @State private var isRegisterSheetPresented = false
     
     // Control the display of the alert
     @State private var showAlert = false
-    
-    // Disable login button if email or password is empty
-    private var disablLogin: Bool {
-        email.isEmpty || !isValidInput()
-    }
     
     var body: some View {
         VStack(spacing: 16){
@@ -47,7 +38,7 @@ struct LoginView: View {
                     .padding(.bottom, 16)
                 
                 // User input (Email, Password)
-                TextField("emailAddress", text: $email)
+                TextField("emailAddress", text: $userViewModel.userEmail)
                     .autocapitalization(.none)
                     .keyboardType(.emailAddress)
                     .padding(10)
@@ -56,7 +47,7 @@ struct LoginView: View {
                             .stroke(colorScheme == .dark ? .white : .gray, lineWidth: 1)
                     )
                     .background(colorScheme == .dark ? .black.opacity(0.5) : .white.opacity(0.8))
-                SecureField("password", text: $password)
+                SecureField("password", text: $userViewModel.userPassword)
                     .autocapitalization(.none)
                     .padding(10)
                     .overlay(
@@ -105,15 +96,20 @@ struct LoginView: View {
         .padding(.horizontal, 48)
     }
     
+    // Disable login button if email or password is empty
+    private var disablLogin: Bool {
+        userViewModel.userEmail.isEmpty || !isValidInput()
+    }
+    
     // Check the validity of user input
     private func isValidInput() -> Bool {
         let minCharacterCount = 6
-        return password.count >= minCharacterCount
+        return userViewModel.userPassword.count >= minCharacterCount
     }
     
     // Perform user login
     private func login() {
-        userViewModel.login(email: email, password: password)
+        userViewModel.login(email: userViewModel.userEmail, password: userViewModel.userPassword)
     }
     
 }

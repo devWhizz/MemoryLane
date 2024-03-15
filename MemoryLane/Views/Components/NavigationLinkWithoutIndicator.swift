@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct NavigationLinkWithoutIndicator<Destination: View, Label: View>: View {
     
     let destination: Destination

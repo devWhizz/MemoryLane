@@ -10,7 +10,7 @@ import SwiftUI
 
 struct TimelineView: View {
     
-    @StateObject private var memoryViewModel = MemoryViewModel()
+    @EnvironmentObject private var memoryViewModel: MemoryViewModel
     
     // Control the visibility of the sheets
     @State private var isAddMemoryViewPresented = false
@@ -21,6 +21,16 @@ struct TimelineView: View {
     
     // Set color scheme
     @Environment(\.colorScheme) var colorScheme
+    
+    // Dictionary of memories grouped by month
+    var sortedMemories: [String: [Memory]] {
+        return memoryViewModel.sortedMemories
+    }
+    
+    // Array of sorted month keys
+    var sortedMonthKeys: [String] {
+        return memoryViewModel.sortedMonthKeys
+    }
     
     var body: some View {
         NavigationView {
@@ -67,6 +77,11 @@ struct TimelineView: View {
             }
             .sheet(isPresented: $isSearchViewPresented) {
                 SearchView(isPresented: $isSearchViewPresented)
+                    .onDisappear {
+                        // Reset search query and fetch memories when search sheet is closed
+                        memoryViewModel.searchText = ""
+                        memoryViewModel.fetchMemories()
+                    }
             }
             // Display an alert for confirming memory deletion
             .alert(item: $memoryToDelete) { memory in
@@ -94,43 +109,6 @@ struct TimelineView: View {
         isSearchViewPresented.toggle()
     }
     
-    // Create section header
-    private func createSectionHeader(for monthKey: String) -> some View {
-        return Text(monthKey)
-            .font(.title3)
-            .bold()
-            .foregroundColor(colorScheme == .dark ? .white : .black)
-            .padding(.leading, 16)
-    }
-    
-    // Dictionary of memories grouped by month
-    var sortedMemories: [String: [Memory]] {
-        let groupedMemories = Dictionary(grouping: memoryViewModel.memories, by: { getMonthYearString(for: $0.date) })
-        return groupedMemories
-    }
-    
-    // Array of sorted month keys
-    var sortedMonthKeys: [String] {
-        return sortedMemories.keys.sorted(by: { compareMonthYearStrings($0, $1) })
-    }
-    
-    // Get a formatted month-year string from a date
-    private func getMonthYearString(for date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
-        return formatter.string(from: date)
-    }
-    
-    // Compare two month-year strings for sorting
-    private func compareMonthYearStrings(_ string1: String, _ string2: String) -> Bool {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
-        
-        if let date1 = formatter.date(from: string1), let date2 = formatter.date(from: string2) {
-            return date1 > date2
-        }
-        return false
-    }
 }
 
 struct MemoriesListView_Previews: PreviewProvider {

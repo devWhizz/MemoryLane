@@ -8,9 +8,11 @@
 import SwiftUI
 import URLImage
 
+
 struct MemoryItemView: View {
     
     @ObservedObject var memoryViewModel: MemoryViewModel
+    
     var memory: Memory
     
     var body: some View {

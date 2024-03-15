@@ -13,9 +13,29 @@ import FirebaseStorage
 
 class UserViewModel: ObservableObject {
     
-    @Published var user: User?
     private let firebaseManager = FirebaseManager.shared
     
+    @Published var user: User?
+    
+    // Store the details of the new user
+    @Published var registerName = ""
+    @Published var registerEmail = ""
+    @Published var registerPassword = ""
+    @Published var selectedProfilePicture: UIImage?
+    
+    // Store the details of the user
+    @Published var userEmail = ""
+    @Published var userPassword = ""
+    
+    // Store the updated details of the user
+    @Published var isEditingName = false
+    @Published var editedName = ""
+    @Published var newProfilePicture = UIImage()
+    @Published var showProfilePicturePicker = false
+    @Published var existingProfilePicture: UIImage?
+    @Published var isProfilePictureLoaded = false
+    
+    @Published var saveButtonIsShowing = false
     
     // Check if a user is logged in
     var userIsLoggedIn: Bool {
@@ -90,51 +110,6 @@ class UserViewModel: ObservableObject {
                 
                 // Automatically log in the newly registered user
                 self.login(email: userEmail, password: password)
-            }
-        }
-    }
-    
-    // Edit existing user
-    func editUser(name: String, newProfilePicture: UIImage? = nil) {
-        guard let uid = Auth.auth().currentUser?.uid else {
-            // Handle the case where the user is not logged in
-            return
-        }
-        
-        let userRef = Firestore.firestore().collection("users").document(uid)
-        
-        var userData: [String: Any] = ["name": name]
-        
-        // Add the profile picture for updating if it has been passed
-        if let newProfilePicture = newProfilePicture {
-            // Upload the new profile picture to Firebase Storage
-            self.uploadProfilePicture(selectedImage: newProfilePicture) { result in
-                switch result {
-                case .success(let uploadedProfilePictureUrl):
-                    // Update the user data with the new profile picture URL
-                    userData["profilePicture"] = uploadedProfilePictureUrl
-                    
-                    userRef.updateData(userData) { error in
-                        if let error = error {
-                            print("Error updating user: \(error.localizedDescription)")
-                        } else {
-                            print("User updated successfully")
-                        }
-                    }
-                case .failure(let error):
-                    print("Error uploading new profile picture: \(error)")
-                }
-            }
-        } else {
-            // No new profile picture provided, update user data without it
-            userRef.updateData(userData) { error in
-                if let error = error {
-                    print("Error updating user: \(error.localizedDescription)")
-                } else {
-                    print("User updated successfully")
-                    // Optional: Refresh the local user data if needed
-                    self.fetchUser(with: uid)
-                }
             }
         }
     }
@@ -233,6 +208,92 @@ class UserViewModel: ObservableObject {
                 self.user = user
             } catch {
                 print("Document isn't a User", error.localizedDescription)
+            }
+        }
+    }
+    
+    func loadExistingProfilePicture(completion: @escaping (UIImage?) -> Void) {
+        guard let user = self.user else {
+            completion(nil)
+            return
+        }
+        guard let imageURL = URL(string: user.profilePicture) else {
+            print("Invalid image URL")
+            completion(nil)
+            return
+        }
+        URLSession.shared.dataTask(with: imageURL) { data, response, error in
+            if let data = data, let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    completion(image)
+                }
+            } else {
+                print("Error loading image: \(error?.localizedDescription ?? "Unknown error")")
+                completion(nil)
+            }
+        }.resume()
+    }
+    
+    // Edit existing user
+    func editUser(name: String, newProfilePicture: UIImage? = nil) {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            // Handle the case where the user is not logged in
+            return
+        }
+        
+        let userRef = Firestore.firestore().collection("users").document(uid)
+        
+        var userData: [String: Any] = ["name": name]
+        
+        // Add the profile picture for updating if it has been passed
+        if let newProfilePicture = newProfilePicture {
+            // Upload the new profile picture to Firebase Storage
+            self.uploadProfilePicture(selectedImage: newProfilePicture) { result in
+                switch result {
+                case .success(let uploadedProfilePictureUrl):
+                    // Update the user data with the new profile picture URL
+                    userData["profilePicture"] = uploadedProfilePictureUrl
+                    
+                    userRef.updateData(userData) { error in
+                        if let error = error {
+                            print("Error updating user: \(error.localizedDescription)")
+                        } else {
+                            print("User updated successfully")
+                        }
+                    }
+                case .failure(let error):
+                    print("Error uploading new profile picture: \(error)")
+                }
+            }
+        } else {
+            // No new profile picture provided, update user data without it
+            userRef.updateData(userData) { error in
+                if let error = error {
+                    print("Error updating user: \(error.localizedDescription)")
+                } else {
+                    print("User updated successfully")
+                    // Optional: Refresh the local user data if needed
+                    self.fetchUser(with: uid)
+                }
+            }
+        }
+    }
+    
+    func updateProfilePicture(existingProfilePicture: UIImage?) {
+        guard let profilePicture = existingProfilePicture else {
+            // Wenn kein Profilbild vorhanden ist, beende die Funktion
+            return
+        }
+        
+        // Lade das Profilbild hoch
+        uploadProfilePicture(selectedImage: profilePicture) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(_):
+                // Wenn das Hochladen erfolgreich war, aktualisiere das Benutzerprofil
+                self.editUser(name: self.user?.name ?? "", newProfilePicture: profilePicture)
+            case .failure(let error):
+                print("Error uploading profile picture: \(error)")
             }
         }
     }

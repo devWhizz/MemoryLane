@@ -20,16 +20,6 @@ struct ProfileView: View {
     // Set color scheme
     @Environment(\.colorScheme) var colorScheme
     
-    @State private var isEditingName = false
-    @State private var editedName = ""
-    
-    @State private var newProfilePicture = UIImage()
-    @State private var showProfilePicturePicker = false
-    @State private var existingProfilePicture: UIImage?
-    @State private var saveButtonIsShowing = false
-    @State private var isProfilePictureLoaded = false
-    
-    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -37,7 +27,7 @@ struct ProfileView: View {
                     HStack(spacing: 24){
                         ZStack(alignment: .topTrailing) {
                             // Display existing profile picture
-                            if let existingProfilePicture = existingProfilePicture {
+                            if let existingProfilePicture = userViewModel.existingProfilePicture {
                                 Image(uiImage: existingProfilePicture)
                                     .resizable()
                                     .scaledToFill()
@@ -51,43 +41,46 @@ struct ProfileView: View {
                                     .font(.title)
                                     .offset(x:5)
                                     .onTapGesture {
-                                        showProfilePicturePicker = true
+                                        userViewModel.showProfilePicturePicker = true
                                     }
-                                    .sheet(isPresented: $showProfilePicturePicker) {
+                                    .sheet(isPresented: $userViewModel.showProfilePicturePicker) {
                                         // Open image picker view
-                                        SingleImagePicker(selectedImage: $existingProfilePicture, isPickerShowing: $showProfilePicturePicker)
+                                        SingleImagePicker(selectedImage: $userViewModel.existingProfilePicture, isPickerShowing: $userViewModel.showProfilePicturePicker)
                                             .onDisappear(){
-                                                saveButtonIsShowing = true
+                                                userViewModel.saveButtonIsShowing = true
                                             }
                                     }
                             }
                         }
-                        if saveButtonIsShowing{
-                            Button("saveImage", action: updateProfilePicture)
-                                .foregroundColor(colorScheme == .dark ? Color.black : Color.white)
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 8)
-                                .background(colorScheme == .dark ? Color.orange : Color.blue)
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                        if userViewModel.saveButtonIsShowing{
+                            Button("saveImage") {
+                                userViewModel.updateProfilePicture(existingProfilePicture: userViewModel.existingProfilePicture)
+                                userViewModel.saveButtonIsShowing = false
+                            }
+                            .foregroundColor(colorScheme == .dark ? Color.black : Color.white)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(colorScheme == .dark ? Color.orange : Color.blue)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
                     }
                     .padding(.top, 16)
                     
                     HStack {
                         Button(action: {
-                            if isEditingName {
+                            if userViewModel.isEditingName {
                                 // Save changes
-                                userViewModel.editUser(name: editedName)
+                                userViewModel.editUser(name: userViewModel.editedName)
                             }
-                            isEditingName.toggle()
-                            editedName = userViewModel.user?.name ?? ""
+                            userViewModel.isEditingName.toggle()
+                            userViewModel.editedName = userViewModel.user?.name ?? ""
                         }) {
-                            Image(systemName: isEditingName ? "checkmark.circle.fill" : "pencil.circle.fill")
+                            Image(systemName: userViewModel.isEditingName ? "checkmark.circle.fill" : "pencil.circle.fill")
                                 .foregroundColor(colorScheme == .dark ? Color.orange : Color.blue)
                         }
                         Text("userName:")
-                        if isEditingName {
-                            TextField("", text: $editedName)
+                        if userViewModel.isEditingName {
+                            TextField("", text: $userViewModel.editedName)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                         } else {
                             Text(userViewModel.user?.name ?? "")
@@ -127,47 +120,17 @@ struct ProfileView: View {
             .onAppear {
                 memoryViewModel.fetchMemories()
                 
-                if !isProfilePictureLoaded {
-                    loadExistingProfilePicture()
-                    isProfilePictureLoaded = true
+                if !userViewModel.isProfilePictureLoaded {
+                    userViewModel.loadExistingProfilePicture { image in
+                        if let image = image {
+                            userViewModel.existingProfilePicture = image
+                        }
+                        userViewModel.isProfilePictureLoaded = true
+                    }
                 }
             }
         }
     }
-    
-    // Function to load existing image from Firebase Storage
-    func loadExistingProfilePicture() {
-        let user: User = self.userViewModel.user!
-        guard let imageURL = URL(string: user.profilePicture) else {
-            print("Invalid image URL")
-            return
-        }
-        URLSession.shared.dataTask(with: imageURL) { data, response, error in
-            if let data = data, let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    existingProfilePicture = image
-                }
-            } else {
-                print("Error loading image: \(error?.localizedDescription ?? "Unknown error")")
-            }
-        }.resume()
-    }
-    
-    func updateProfilePicture() {
-        if let profilePicture = existingProfilePicture {
-            userViewModel.uploadProfilePicture(selectedImage: profilePicture) { [self] result in
-                switch result {
-                case .success(_):
-                    userViewModel.editUser(
-                        name: userViewModel.user?.name ?? "",
-                        newProfilePicture: profilePicture)
-                case .failure(let error):
-                    print("Error uploading profile picture: \(error)")
-                }
-            }
-        }
-    }
-    
 }
 
 struct ProfileView_Previews: PreviewProvider {

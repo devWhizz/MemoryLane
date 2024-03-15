@@ -16,12 +16,6 @@ struct RegisterView: View {
     // Set color scheme
     @Environment(\.colorScheme) var colorScheme
     
-    // Track user input
-    @State private var name = ""
-    @State private var email = ""
-    @State private var password = ""
-    @State var selectedProfilePicture: UIImage?
-    
     // Control the presentation of the photo library
     @State private var isImagePickerShowing = false
     
@@ -33,7 +27,7 @@ struct RegisterView: View {
     
     // Disable register button if profile picture, name, email or password is empty or password it invalid
     private var disableRegistration: Bool {
-        name.isEmpty || email.isEmpty || !isValidInput()
+        userViewModel.registerName.isEmpty || userViewModel.registerEmail.isEmpty || !isValidInput()
     }
     
     var body: some View {
@@ -47,7 +41,7 @@ struct RegisterView: View {
                 HStack{
                     HStack {
                         // Show the selected profile picture or the placeholder
-                        if let selectedProfilePicture = selectedProfilePicture {
+                        if let selectedProfilePicture = userViewModel.selectedProfilePicture {
                             Image(uiImage: selectedProfilePicture)
                                 .resizable()
                                 .scaledToFill()
@@ -104,12 +98,12 @@ struct RegisterView: View {
                         Spacer()
                     }
                     .sheet(isPresented: $isImagePickerShowing, content: {
-                        SingleImagePicker(selectedImage: $selectedProfilePicture, isPickerShowing: $isImagePickerShowing)
+                        SingleImagePicker(selectedImage: $userViewModel.selectedProfilePicture, isPickerShowing: $isImagePickerShowing)
                     })
                     
                 }
                 
-                TextField("userName", text: $name)
+                TextField("userName", text: $userViewModel.registerName)
                     .autocapitalization(.none)
                     .padding(10)
                     .overlay(
@@ -118,7 +112,7 @@ struct RegisterView: View {
                     )
                     .padding(.top, 12)
                 
-                TextField("emailAddress", text: $email)
+                TextField("emailAddress", text: $userViewModel.registerEmail)
                     .autocapitalization(.none)
                     .keyboardType(.emailAddress)
                     .padding(10)
@@ -127,7 +121,7 @@ struct RegisterView: View {
                             .stroke(colorScheme == .dark ? .white : .gray, lineWidth: 1)
                     )
                 
-                SecureField("password", text: $password)
+                SecureField("password", text: $userViewModel.registerPassword)
                     .autocapitalization(.none)
                     .padding(10)
                     .overlay(
@@ -137,7 +131,7 @@ struct RegisterView: View {
                 
                 // Trigger user registration
                 Button(action: {
-                    if !password.isEmpty && password.count < 6 {
+                    if !userViewModel.registerPassword.isEmpty && userViewModel.registerPassword.count < 6 {
                         showAlert = true
                     } else {
                         register()
@@ -177,12 +171,12 @@ struct RegisterView: View {
     // Check the validity of user input
     private func isValidInput() -> Bool {
         let minCharacterCount = 6
-        return password.count >= minCharacterCount
+        return userViewModel.registerPassword.count >= minCharacterCount
     }
     
     // Perform user login
     private func register() {
-        userViewModel.registerUser(name: name, email: email, password: password, selectedProfilePicture: selectedProfilePicture)
+        userViewModel.registerUser(name: userViewModel.registerName, email: userViewModel.registerEmail, password: userViewModel.registerPassword, selectedProfilePicture: userViewModel.selectedProfilePicture)
     }
     
 }

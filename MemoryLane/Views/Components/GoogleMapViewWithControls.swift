@@ -11,6 +11,8 @@ import GoogleMaps
 
 struct GoogleMapViewWithControls: View {
     
+    @ObservedObject var memoryViewModel: MemoryViewModel
+    
     var address: String
     
     @State private var mapType: GMSMapViewType = .normal
@@ -26,6 +28,10 @@ struct GoogleMapViewWithControls: View {
             MapControlsView(mapType: $mapType, zoomLevel: $zoomLevel, shouldUpdateView: $shouldUpdateView)
                 .padding(.horizontal, 16)
                 .padding(.top, 16)
+        }
+        .onReceive(memoryViewModel.objectWillChange) { _ in
+            // Update the map view when memoryViewModel changes
+            shouldUpdateView.toggle()
         }
     }
 }

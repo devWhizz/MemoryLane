@@ -74,6 +74,9 @@
 		8261E3392B87A348000793F6 /* MapControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8261E3382B87A348000793F6 /* MapControlsView.swift */; };
 		82A3F8152B67B6E400ECAFDF /* Pflichtenheft-iOS_Martin-Roensch.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 82A3F8142B67B6E400ECAFDF /* Pflichtenheft-iOS_Martin-Roensch.pdf */; };
 		82A3F8192B68E97C00ECAFDF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 82A3F8182B68E97C00ECAFDF /* Localizable.xcstrings */; };
+		82AA870E2BA30B3C007CC75B /* MemoryUploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82AA870D2BA30B3C007CC75B /* MemoryUploadManager.swift */; };
+		82AA87102BA31893007CC75B /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82AA870F2BA31893007CC75B /* DateExtensions.swift */; };
+		82AA87132BA327DB007CC75B /* HeaderExtentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82AA87122BA327DB007CC75B /* HeaderExtentions.swift */; };
 		82F602D82B6439D600B951BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 82F602D72B6439D600B951BD /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -113,6 +116,9 @@
 		82A3F8142B67B6E400ECAFDF /* Pflichtenheft-iOS_Martin-Roensch.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Pflichtenheft-iOS_Martin-Roensch.pdf"; sourceTree = "<group>"; };
 		82A3F8182B68E97C00ECAFDF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		82AA87042B8FB417007CC75B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		82AA870D2BA30B3C007CC75B /* MemoryUploadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryUploadManager.swift; sourceTree = "<group>"; };
+		82AA870F2BA31893007CC75B /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensions.swift; sourceTree = "<group>"; };
+		82AA87122BA327DB007CC75B /* HeaderExtentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderExtentions.swift; sourceTree = "<group>"; };
 		82F602D72B6439D600B951BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -183,8 +189,9 @@
 			children = (
 				825C759B2B5EA5C200C2B436 /* MemoryLaneApp.swift */,
 				825C759D2B5EA5C200C2B436 /* ContentView.swift */,
-				825C75AD2B5EA67900C2B436 /* Managers */,
 				825C75A92B5EA5D500C2B436 /* Models */,
+				825C75AD2B5EA67900C2B436 /* Managers */,
+				82AA87112BA319B4007CC75B /* Extentions */,
 				825C75ED2B5EAD7E00C2B436 /* Enums */,
 				825C75AA2B5EA5DD00C2B436 /* ViewModels */,
 				825C75AB2B5EA5E700C2B436 /* Views */,
@@ -255,6 +262,7 @@
 				825C75AE2B5EA68D00C2B436 /* FirebaseManager.swift */,
 				8261E3172B6A7078000793F6 /* SingleImagePicker.swift */,
 				8261E31D2B70D7ED000793F6 /* MultipleImagesPicker.swift */,
+				82AA870D2BA30B3C007CC75B /* MemoryUploadManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -285,6 +293,15 @@
 				8261E3132B694863000793F6 /* SearchView.swift */,
 			);
 			path = Sheets;
+			sourceTree = "<group>";
+		};
+		82AA87112BA319B4007CC75B /* Extentions */ = {
+			isa = PBXGroup;
+			children = (
+				82AA870F2BA31893007CC75B /* DateExtensions.swift */,
+				82AA87122BA327DB007CC75B /* HeaderExtentions.swift */,
+			);
+			path = Extentions;
 			sourceTree = "<group>";
 		};
 		82F602D62B6417C700B951BD /* MainScreens */ = {
@@ -421,6 +438,7 @@
 				8261E3182B6A7078000793F6 /* SingleImagePicker.swift in Sources */,
 				8261E31E2B70D7ED000793F6 /* MultipleImagesPicker.swift in Sources */,
 				8261E32B2B762759000793F6 /* SearchBarView.swift in Sources */,
+				82AA870E2BA30B3C007CC75B /* MemoryUploadManager.swift in Sources */,
 				825C75F12B5EAF7200C2B436 /* MemoryViewModel.swift in Sources */,
 				825C75EF2B5EADC000C2B436 /* Memory.swift in Sources */,
 				825C75F92B5EBCE700C2B436 /* HomeView.swift in Sources */,
@@ -442,7 +460,9 @@
 				8261E3372B8776D1000793F6 /* GoogleMapViewWithControls.swift in Sources */,
 				825C75F32B5EB47A00C2B436 /* LoginView.swift in Sources */,
 				8261E3392B87A348000793F6 /* MapControlsView.swift in Sources */,
+				82AA87102BA31893007CC75B /* DateExtensions.swift in Sources */,
 				825C759C2B5EA5C200C2B436 /* MemoryLaneApp.swift in Sources */,
+				82AA87132BA327DB007CC75B /* HeaderExtentions.swift in Sources */,
 				8261E32D2B772F09000793F6 /* TimelineView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -502,7 +522,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -559,7 +579,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;

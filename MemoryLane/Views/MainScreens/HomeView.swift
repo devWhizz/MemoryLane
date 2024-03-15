@@ -10,23 +10,11 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @EnvironmentObject private var userViewModel: UserViewModel
-    @StateObject private var memoryViewModel = MemoryViewModel()
+    @EnvironmentObject private var memoryViewModel: MemoryViewModel
     
     // Control the visibility of the sheets
     @State private var isAddMemoryViewPresented = false
     @State private var isSearchViewPresented = false
-    
-    // Define a mapping between categories and their localized translations
-    let categoryTranslations: [String: String] = [
-        "vacations": NSLocalizedString("vacations", comment: ""),
-        "birthdays": NSLocalizedString("birthdays", comment: ""),
-        "holidays": NSLocalizedString("holidays", comment: ""),
-        "achievements": NSLocalizedString("achievements", comment: ""),
-        "adventures": NSLocalizedString("adventures", comment: ""),
-        "family": NSLocalizedString("family", comment: ""),
-        "creativity": NSLocalizedString("creativity", comment: "")
-    ]
     
     var body: some View {
         NavigationView {
@@ -35,8 +23,8 @@ struct HomeView: View {
                     // Iterate through memory categories, sorted alphabetically based on localized translations
                     ForEach(memoryViewModel.memoryCategories.sorted(by: { (category1, category2) in
                         // Obtain translations for category names or use the original names as fallback
-                        let translation1 = categoryTranslations[category1] ?? category1
-                        let translation2 = categoryTranslations[category2] ?? category2
+                        let translation1 = memoryViewModel.categoryTranslations[category1] ?? category1
+                        let translation2 = memoryViewModel.categoryTranslations[category2] ?? category2
                         // Compare the translated category names in a localized manner
                         return translation1.localizedCompare(translation2) == .orderedAscending
                     }), id: \.self) { category in
@@ -82,6 +70,11 @@ struct HomeView: View {
                 }
                 .sheet(isPresented: $isSearchViewPresented) {
                     SearchView(isPresented: $isSearchViewPresented)
+                        .onDisappear {
+                            // Reset search query and fetch memories when search sheet is closed
+                            memoryViewModel.searchText = ""
+                            memoryViewModel.fetchMemories()
+                        }
                 }
                 .onAppear {
                     memoryViewModel.fetchMemories()
@@ -103,5 +96,7 @@ struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
             .environmentObject(UserViewModel())
+            .environmentObject(MemoryViewModel())
+        
     }
 }

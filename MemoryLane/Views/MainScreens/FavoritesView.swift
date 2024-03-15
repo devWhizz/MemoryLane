@@ -10,7 +10,7 @@ import SwiftUI
 
 struct FavoritesView: View {
     
-    @StateObject private var memoryViewModel = MemoryViewModel()
+    @EnvironmentObject private var memoryViewModel: MemoryViewModel
     
     // Set color scheme
     @Environment(\.colorScheme) var colorScheme

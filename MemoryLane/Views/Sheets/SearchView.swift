@@ -10,12 +10,11 @@ import SwiftUI
 
 struct SearchView: View {
     
-    @State private var searchText = ""
     @EnvironmentObject var memoryViewModel: MemoryViewModel
     
     // Control the presentation of the sheet itself
     @Binding var isPresented: Bool
-    
+
     // Set color scheme
     @Environment(\.colorScheme) var colorScheme
     
@@ -23,11 +22,11 @@ struct SearchView: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .center, spacing: 12) {
-                    SearchBarView(text: $searchText)
-                        .onChange(of: searchText) {
-                            memoryViewModel.searchMemories(query: searchText)
+                    SearchBarView(text: $memoryViewModel.searchText)
+                        .onChange(of: memoryViewModel.searchText) {
+                            memoryViewModel.searchMemories(query: memoryViewModel.searchText)
                         }
-                    if searchText.isEmpty {
+                    if memoryViewModel.searchText.isEmpty {
                         Text("noSearchTerm")
                             .font(.headline)
                     } else if memoryViewModel.memories.isEmpty {
