@@ -47,12 +47,13 @@ struct GoogleMapView: UIViewRepresentable {
     // Update the Google Maps view with the given address
     func updateMapView(_ mapView: GMSMapView) {
         let geocoder = CLGeocoder()
+        // Convert address to coordinates
         geocoder.geocodeAddressString(address) { placemarks, error in
             if let location = placemarks?.first?.location {
                 // Clear existing markers on the map
                 mapView.clear()
                 
-                // Convert address to coordinates and add a marker to the map
+                // Add a marker to the map
                 let marker = GMSMarker()
                 marker.position = location.coordinate
                 mapView.mapType = mapType

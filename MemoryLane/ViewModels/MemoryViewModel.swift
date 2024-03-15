@@ -53,11 +53,6 @@ class MemoryViewModel : ObservableObject {
     @Published var locationPredictions: [GMSAutocompletePrediction] = []
     @Published private var selectedLocationPrediction: GMSAutocompletePrediction?
     
-    func updateLocationInput(_ newValue: String) {
-        locationInput = newValue
-        self.objectWillChange.send() // Manually trigger view refresh
-    }
-    
     // Set category choices
     let categories = [
         NSLocalizedString("vacations", comment: ""),
