@@ -236,12 +236,9 @@ class UserViewModel: ObservableObject {
     
     // Edit existing user
     func editUser(name: String, newProfilePicture: UIImage? = nil) {
-        guard let uid = Auth.auth().currentUser?.uid else {
-            // Handle the case where the user is not logged in
-            return
-        }
         
-        let userRef = Firestore.firestore().collection("users").document(uid)
+        let userID = Auth.auth().currentUser?.uid
+        let userRef = Firestore.firestore().collection("users").document(userID ?? "")
         
         var userData: [String: Any] = ["name": name]
         
@@ -273,24 +270,24 @@ class UserViewModel: ObservableObject {
                 } else {
                     print("User updated successfully")
                     // Optional: Refresh the local user data if needed
-                    self.fetchUser(with: uid)
+                    self.fetchUser(with: userID!)
                 }
             }
         }
     }
     
-    func updateProfilePicture(existingProfilePicture: UIImage?) {
-        guard let profilePicture = existingProfilePicture else {
-            // Wenn kein Profilbild vorhanden ist, beende die Funktion
+    func updateProfilePicture(selectedProfilePicture: UIImage?) {
+        guard let profilePicture = selectedProfilePicture else {
+            // If no profile picture is available, exit the function
             return
         }
         
-        // Lade das Profilbild hoch
+        // Upload profile picture
         uploadProfilePicture(selectedImage: profilePicture) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(_):
-                // Wenn das Hochladen erfolgreich war, aktualisiere das Benutzerprofil
+                // If the upload was successful, update the user profile
                 self.editUser(name: self.user?.name ?? "", newProfilePicture: profilePicture)
             case .failure(let error):
                 print("Error uploading profile picture: \(error)")

@@ -17,7 +17,7 @@ struct EditMemoryView: View {
     // Control the presentation of the sheet itself
     @Binding var isPresented: Bool
     
-    // Control the presentation of the photo libraries
+    // Control the presentation of the photo library
     @State private var showCoverImagePicker = false
     @State private var showGalleryImagePicker = false
     
@@ -67,8 +67,7 @@ struct EditMemoryView: View {
                         ))
                         .disableAutocorrection(true)
                         
-                        if !memoryViewModel.locationPredictions.isEmpty {
-                            // Display list of suggested locations
+                        if memoryViewModel.selectedLocationPrediction == nil || memoryViewModel.locationInput != memoryViewModel.selectedLocationPrediction?.attributedFullText.string {                            // Display list of suggested locations
                             ScrollView {
                                 ForEach(memoryViewModel.locationPredictions, id: \.attributedPrimaryText.string) { prediction in
                                     VStack(alignment: .leading) {
@@ -228,9 +227,8 @@ struct EditMemoryView: View {
         }
     }
     
-    
     // Function to load existing image from Firebase Storage
-    func loadExistingCoverImage() {
+    private func loadExistingCoverImage() {
         guard let imageURL = URL(string: memory.coverImage) else {
             print("Invalid image URL")
             return
@@ -248,7 +246,7 @@ struct EditMemoryView: View {
     }
     
     // Function to load existing images from Firebase Storage
-    func loadExistingGalleryImages() {
+    private func loadExistingGalleryImages() {
         guard let galleryImageURLs = memory.galleryImages else {
             print("Gallery images URLs are nil")
             return
@@ -282,4 +280,3 @@ struct EditMemoryView_Previews: PreviewProvider {
         EditMemoryView(memoryViewModel: MemoryViewModel(), isPresented: .constant(true), memory: Memory.exampleMemory)
     }
 }
-

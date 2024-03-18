@@ -97,6 +97,5 @@ struct HomeView_Previews: PreviewProvider {
         HomeView()
             .environmentObject(UserViewModel())
             .environmentObject(MemoryViewModel())
-        
     }
 }

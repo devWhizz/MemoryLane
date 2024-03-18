@@ -309,8 +309,8 @@
 			children = (
 				825C75F82B5EBCE700C2B436 /* HomeView.swift */,
 				8261E32C2B772F09000793F6 /* TimelineView.swift */,
-				8250BB6C2B5FC9F10027E889 /* MemoryDetailView.swift */,
 				8261E3152B6948A6000793F6 /* FavoritesView.swift */,
+				8250BB6C2B5FC9F10027E889 /* MemoryDetailView.swift */,
 				8250BB6A2B5FB3B40027E889 /* ProfileView.swift */,
 			);
 			path = MainScreens;

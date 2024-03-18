@@ -16,7 +16,7 @@ struct AddMemoryView: View {
     
     @EnvironmentObject var memoryViewModel: MemoryViewModel
     
-    // Control the presentation of the sheet
+    // Control the presentation of the sheet itself
     @Binding var isPresented: Bool
     
     // Control the presentation of the photo libraries
@@ -66,8 +66,8 @@ struct AddMemoryView: View {
                                 memoryViewModel.getPlacePredictions(for: memoryViewModel.locationInput)
                             }
                         
-                        // Display suggested locations if available
-                        if !memoryViewModel.locationPredictions.isEmpty {
+                        // Display suggested locations if no location is selected or if location input is modified
+                        if memoryViewModel.selectedLocationPrediction == nil || memoryViewModel.locationInput != memoryViewModel.selectedLocationPrediction?.attributedFullText.string {
                             // Display list of suggested locations
                             ScrollView {
                                 // Loop through the location predictions
@@ -82,7 +82,7 @@ struct AddMemoryView: View {
                                     }
                                     // Trigger selectPlace() when a prediction is tapped
                                     .onTapGesture {
-                                        self.memoryViewModel.selectPlace(prediction)
+                                        memoryViewModel.selectPlace(prediction)
                                         print("Chosen location \(memoryViewModel.locationInput)")
                                     }
                                     .frame(height: 50)
@@ -220,6 +220,7 @@ struct AddMemoryView: View {
     private var disableSaving: Bool {
         memoryViewModel.selectedCategory.isEmpty || memoryViewModel.title.isEmpty || memoryViewModel.location.isEmpty || memoryViewModel.selectedCoverImage == nil
     }
+    
 }
 
 struct AddMemoryView_Previews: PreviewProvider {

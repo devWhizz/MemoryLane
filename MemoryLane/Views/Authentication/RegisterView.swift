@@ -11,7 +11,7 @@ import SwiftUI
 struct RegisterView: View {
     
     @EnvironmentObject private var userViewModel: UserViewModel
-    @EnvironmentObject var memoryViewModel: MemoryViewModel
+    @EnvironmentObject private var memoryViewModel: MemoryViewModel
     
     // Set color scheme
     @Environment(\.colorScheme) var colorScheme

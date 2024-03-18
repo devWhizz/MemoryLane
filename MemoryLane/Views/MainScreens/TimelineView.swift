@@ -22,16 +22,6 @@ struct TimelineView: View {
     // Set color scheme
     @Environment(\.colorScheme) var colorScheme
     
-    // Dictionary of memories grouped by month
-    var sortedMemories: [String: [Memory]] {
-        return memoryViewModel.sortedMemories
-    }
-    
-    // Array of sorted month keys
-    var sortedMonthKeys: [String] {
-        return memoryViewModel.sortedMonthKeys
-    }
-    
     var body: some View {
         NavigationView {
             List {
@@ -99,6 +89,16 @@ struct TimelineView: View {
                 memoryViewModel.fetchMemories()
             }
         }
+    }
+    
+    // Dictionary of memories grouped by month
+    private var sortedMemories: [String: [Memory]] {
+        return memoryViewModel.sortedMemories
+    }
+    
+    // Array of sorted month keys
+    private var sortedMonthKeys: [String] {
+        return memoryViewModel.sortedMonthKeys
     }
     
     private func addMemory() {

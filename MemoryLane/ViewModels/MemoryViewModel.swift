@@ -45,13 +45,13 @@ class MemoryViewModel : ObservableObject {
     @Published var selectedNewGalleryImages: [UIImage] = []
     
     @Published var searchText = ""
-
+    
     // Store the details of Google Places related details
     @Published var location = ""
     @Published var newLocation = ""
     @Published var locationInput: String = ""
     @Published var locationPredictions: [GMSAutocompletePrediction] = []
-    @Published private var selectedLocationPrediction: GMSAutocompletePrediction?
+    @Published var selectedLocationPrediction: GMSAutocompletePrediction?
     
     // Set category choices
     let categories = [

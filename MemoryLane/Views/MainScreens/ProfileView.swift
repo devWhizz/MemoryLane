@@ -54,7 +54,7 @@ struct ProfileView: View {
                         }
                         if userViewModel.saveButtonIsShowing{
                             Button("saveImage") {
-                                userViewModel.updateProfilePicture(existingProfilePicture: userViewModel.existingProfilePicture)
+                                userViewModel.updateProfilePicture(selectedProfilePicture: userViewModel.existingProfilePicture)
                                 userViewModel.saveButtonIsShowing = false
                             }
                             .foregroundColor(colorScheme == .dark ? Color.black : Color.white)

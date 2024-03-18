@@ -11,7 +11,7 @@ import SwiftUI
 struct LoginView: View {
     
     @EnvironmentObject private var userViewModel: UserViewModel
-    @EnvironmentObject var memoryViewModel: MemoryViewModel
+    @EnvironmentObject private var memoryViewModel: MemoryViewModel
     
     // Set color scheme
     @Environment(\.colorScheme) var colorScheme
@@ -94,7 +94,12 @@ struct LoginView: View {
                 .edgesIgnoringSafeArea(.all)
         )
         .padding(.horizontal, 48)
+        .onDisappear {
+            // Clear password field when the view disappears
+            userViewModel.userPassword = ""
+        }
     }
+    
     
     // Disable login button if email or password is empty
     private var disablLogin: Bool {
