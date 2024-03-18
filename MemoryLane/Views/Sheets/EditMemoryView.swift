@@ -215,6 +215,8 @@ struct EditMemoryView: View {
                 }
             }
             .onAppear {
+                memoryViewModel.existingGalleryImages.removeAll()
+                
                 // Capitalize 1st letter to display correct category in picker
                 if let firstCharacter = memory.category.first {
                     memoryViewModel.newSelectedCategory = String(firstCharacter).capitalized + memory.category.dropFirst()
@@ -247,6 +249,7 @@ struct EditMemoryView: View {
     
     // Function to load existing images from Firebase Storage
     private func loadExistingGalleryImages() {
+        
         guard let galleryImageURLs = memory.galleryImages else {
             print("Gallery images URLs are nil")
             return
