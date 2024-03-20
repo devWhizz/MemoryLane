@@ -72,7 +72,6 @@
 		8261E32F2B7CACD3000793F6 /* NavigationLinkWithoutIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8261E32E2B7CACD3000793F6 /* NavigationLinkWithoutIndicator.swift */; };
 		8261E3372B8776D1000793F6 /* GoogleMapViewWithControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8261E3362B8776D1000793F6 /* GoogleMapViewWithControls.swift */; };
 		8261E3392B87A348000793F6 /* MapControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8261E3382B87A348000793F6 /* MapControlsView.swift */; };
-		8276A5E92BAB0834008DC4D8 /* Secrets.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8276A5E82BAB0834008DC4D8 /* Secrets.plist */; };
 		82A3F8152B67B6E400ECAFDF /* Pflichtenheft-iOS_Martin-Roensch.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 82A3F8142B67B6E400ECAFDF /* Pflichtenheft-iOS_Martin-Roensch.pdf */; };
 		82A3F8192B68E97C00ECAFDF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 82A3F8182B68E97C00ECAFDF /* Localizable.xcstrings */; };
 		82AA870E2BA30B3C007CC75B /* MemoryUploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82AA870D2BA30B3C007CC75B /* MemoryUploadManager.swift */; };
@@ -114,7 +113,6 @@
 		8261E32E2B7CACD3000793F6 /* NavigationLinkWithoutIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLinkWithoutIndicator.swift; sourceTree = "<group>"; };
 		8261E3362B8776D1000793F6 /* GoogleMapViewWithControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapViewWithControls.swift; sourceTree = "<group>"; };
 		8261E3382B87A348000793F6 /* MapControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapControlsView.swift; sourceTree = "<group>"; };
-		8276A5E82BAB0834008DC4D8 /* Secrets.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Secrets.plist; sourceTree = "<group>"; };
 		82A3F8142B67B6E400ECAFDF /* Pflichtenheft-iOS_Martin-Roensch.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Pflichtenheft-iOS_Martin-Roensch.pdf"; sourceTree = "<group>"; };
 		82A3F8182B68E97C00ECAFDF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		82AA87042B8FB417007CC75B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -201,7 +199,6 @@
 				82A3F8142B67B6E400ECAFDF /* Pflichtenheft-iOS_Martin-Roensch.pdf */,
 				82A3F8182B68E97C00ECAFDF /* Localizable.xcstrings */,
 				82F602D72B6439D600B951BD /* GoogleService-Info.plist */,
-				8276A5E82BAB0834008DC4D8 /* Secrets.plist */,
 				825C75A12B5EA5C400C2B436 /* Preview Content */,
 			);
 			path = MemoryLane;
@@ -424,7 +421,6 @@
 				82A3F8192B68E97C00ECAFDF /* Localizable.xcstrings in Resources */,
 				82A3F8152B67B6E400ECAFDF /* Pflichtenheft-iOS_Martin-Roensch.pdf in Resources */,
 				825C75A02B5EA5C400C2B436 /* Assets.xcassets in Resources */,
-				8276A5E92BAB0834008DC4D8 /* Secrets.plist in Resources */,
 				82F602D82B6439D600B951BD /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
