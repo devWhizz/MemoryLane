@@ -28,9 +28,14 @@ struct MemoryLaneApp: App {
         FirebaseApp.configure()
         
         // Google Maps/Places configuration
-        GMSServices.provideAPIKey("AIzaSyBodVllpWkN93TW6NefjyNAPIKhqfTPOP0")
-        GMSPlacesClient.provideAPIKey("AIzaSyBodVllpWkN93TW6NefjyNAPIKhqfTPOP0")
-        
+        if let filePath = Bundle.main.path(forResource: "Secrets", ofType: "plist"),
+           let plist = NSDictionary(contentsOfFile: filePath),
+           let googleMapsAPIKey = plist["GoogleMapsAPIKey"] as? String {
+            GMSServices.provideAPIKey(googleMapsAPIKey)
+            GMSPlacesClient.provideAPIKey(googleMapsAPIKey)
+        } else {
+            fatalError("Google Maps API Key not found in Secrets.plist")
+        }
     }
     
     var body: some Scene {
