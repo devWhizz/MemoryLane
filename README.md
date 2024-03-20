@@ -26,7 +26,8 @@ To run the MemoryLane app on your local environment, follow these steps:
 
 1. Clone the repository from [GitHub](https://github.com/devWhizz/MemoryLane).
 2. Open the project in Xcode.
-3. Build and run the app on an emulator or physical iOS device.
+3. Contact the app's creator to obtain a valid Google Maps API key 
+4. Build and run the app on an emulator or physical iOS device.
 
 <br>
 
