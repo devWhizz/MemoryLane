@@ -101,6 +101,15 @@ struct TimelineView: View {
         return memoryViewModel.sortedMonthKeys
     }
     
+    // Create section header
+    private func createSectionHeader(for monthKey: String) -> some View {
+        return Text(monthKey)
+            .font(.title3)
+            .bold()
+            .foregroundColor(colorScheme == .dark ? Color.white : Color.black)
+            .padding(.leading, 16)
+    }
+    
     private func addMemory() {
         isAddMemoryViewPresented.toggle()
     }
